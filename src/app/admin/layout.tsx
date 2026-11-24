@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { User } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
-import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -21,11 +20,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="flex items-center justify-between border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Logo size={24} showText={false} />
-          <span className="text-sm font-semibold text-muted-foreground">Admin</span>
-        </div>
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/80 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <Link href="/admin" className="flex flex-col leading-tight">
+          <span className="text-sm font-bold tracking-tight">Mis Turnos</span>
+          <span className="text-xs text-muted-foreground">Admin</span>
+        </Link>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" render={<Link href="/" />}>
             <User className="size-4" />

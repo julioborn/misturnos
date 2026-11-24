@@ -18,7 +18,7 @@ export function PlayerNav({ unreadCount }: { unreadCount: number }) {
   return (
     <>
       {/* Mobile: barra inferior fija */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t bg-background sm:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60 sm:hidden">
         {ITEMS.map((item) => {
           const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
           const Icon = item.icon;

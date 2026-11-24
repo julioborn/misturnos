@@ -4,7 +4,6 @@ import { ShieldCheck, LayoutDashboard } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
 import { PlayerNav } from "@/components/player/player-nav";
-import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 
 export default async function PlayerLayout({ children }: { children: React.ReactNode }) {
@@ -35,9 +34,9 @@ export default async function PlayerLayout({ children }: { children: React.React
 
   return (
     <div className="flex min-h-full flex-1 flex-col pb-16 sm:pb-0">
-      <header className="flex items-center justify-between gap-2 border-b px-4 py-3 sm:px-6">
-        <Link href="/">
-          <Logo size={26} />
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b bg-background/80 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/60 sm:px-6">
+        <Link href="/" className="text-base font-bold tracking-tight">
+          Mis Turnos
         </Link>
         <PlayerNav unreadCount={count ?? 0} />
         <div className="flex items-center gap-1">

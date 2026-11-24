@@ -4,7 +4,6 @@ import { User } from "lucide-react";
 import { getActiveEstablishment } from "@/lib/panel/establishment";
 import { signOut } from "@/app/actions";
 import { switchEstablishment } from "./switch-actions";
-import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { PanelNav } from "@/components/panel/panel-nav";
 
@@ -33,30 +32,31 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="flex items-center justify-between border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Logo size={24} showText={false} />
-          <div className="flex flex-col">
-            <h1 className="text-sm font-bold leading-tight">{establishment.name}</h1>
-            {memberships.length > 1 && (
-              <form action={switchEstablishment} className="flex items-center gap-1">
-                <select
-                  name="establishment_id"
-                  defaultValue={establishment.id}
-                  className="text-xs text-muted-foreground"
-                >
-                  {memberships.map((m) => (
-                    <option key={m.establishment_id} value={m.establishment_id}>
-                      {m.establishments?.name}
-                    </option>
-                  ))}
-                </select>
-                <button type="submit" className="text-xs font-medium underline underline-offset-2">
-                  Cambiar
-                </button>
-              </form>
-            )}
-          </div>
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b bg-background/80 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <div className="flex min-w-0 flex-col leading-tight">
+          <Link href="/panel" className="text-sm font-bold tracking-tight">
+            Mis Turnos
+          </Link>
+          {memberships.length > 1 ? (
+            <form action={switchEstablishment} className="flex items-center gap-1">
+              <select
+                name="establishment_id"
+                defaultValue={establishment.id}
+                className="max-w-32 truncate text-xs text-muted-foreground"
+              >
+                {memberships.map((m) => (
+                  <option key={m.establishment_id} value={m.establishment_id}>
+                    {m.establishments?.name}
+                  </option>
+                ))}
+              </select>
+              <button type="submit" className="text-xs font-medium underline underline-offset-2">
+                Cambiar
+              </button>
+            </form>
+          ) : (
+            <span className="truncate text-xs text-muted-foreground">{establishment.name}</span>
+          )}
         </div>
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" render={<Link href="/" />}>
