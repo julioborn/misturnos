@@ -1,0 +1,13 @@
+{
+  "name": "Mis Turnos",
+  "short_name": "Mis Turnos",
+  "description": "Reservá tu cancha sin vueltas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#059669",
+  "icons": [
+    { "src": "/512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/1254x1254.png", "sizes": "1254x1254", "type": "image/png", "purpose": "maskable" }
+  ]
+}
