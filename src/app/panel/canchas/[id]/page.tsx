@@ -9,6 +9,7 @@ import {
   addCourtPrice,
   removeCourtPrice,
 } from "../actions";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -139,19 +140,23 @@ export default async function EditCourtPage({
       </div>
 
       <div>
-        <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Horarios</h3>
-        <div className="mb-3 flex flex-col gap-1">
+        <h3 className="mb-3 text-lg font-bold">Horarios</h3>
+        <div className="mb-4 flex flex-col gap-2">
           {(hours ?? []).map((h) => {
             const removeWithIds = removeCourtHour.bind(null, court.id, h.id);
             return (
-              <Card key={h.id} className="flex-row items-center justify-between gap-3 px-3 py-2 text-sm">
-                <span>
-                  {WEEKDAYS[h.weekday]}: {h.open_time.slice(0, 5)} – {h.close_time.slice(0, 5)}
-                </span>
+              <Card key={h.id} className="flex-row items-center justify-between gap-3 px-4 py-3.5">
+                <div className="flex flex-col">
+                  <span className="text-base font-semibold">{WEEKDAYS[h.weekday]}</span>
+                  <span className="text-base text-muted-foreground">
+                    {h.open_time.slice(0, 5)} – {h.close_time.slice(0, 5)}
+                  </span>
+                </div>
                 {canEdit && (
                   <form action={removeWithIds}>
-                    <Button type="submit" variant="ghost" size="sm" className="text-destructive">
-                      Quitar
+                    <Button type="submit" variant="ghost" size="icon" className="size-11 text-destructive">
+                      <Trash2 className="size-5" />
+                      <span className="sr-only">Quitar</span>
                     </Button>
                   </form>
                 )}
@@ -159,24 +164,39 @@ export default async function EditCourtPage({
             );
           })}
           {(hours ?? []).length === 0 && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               Sin horarios cargados — la cancha no va a tener turnos disponibles.
             </p>
           )}
         </div>
         {canEdit && (
-          <form action={addHourWithId} className="flex flex-wrap items-end gap-2">
-            <NativeSelect name="weekday" required className="w-auto">
-              {WEEKDAYS.map((w, i) => (
-                <option key={i} value={i}>{w}</option>
-              ))}
-            </NativeSelect>
-            <Input type="time" name="open_time" required className="w-auto" />
-            <Input type="time" name="close_time" required className="w-auto" />
-            <Button type="submit" variant="outline" size="sm">
-              Agregar
-            </Button>
-          </form>
+          <Card>
+            <CardContent>
+              <form action={addHourWithId} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="hour_weekday" className="text-base">Día</Label>
+                  <NativeSelect id="hour_weekday" name="weekday" required className="h-12 text-base">
+                    {WEEKDAYS.map((w, i) => (
+                      <option key={i} value={i}>{w}</option>
+                    ))}
+                  </NativeSelect>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="open_time" className="text-base">Desde</Label>
+                    <Input id="open_time" type="time" name="open_time" required className="h-12 text-base" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="close_time" className="text-base">Hasta</Label>
+                    <Input id="close_time" type="time" name="close_time" required className="h-12 text-base" />
+                  </div>
+                </div>
+                <Button type="submit" size="lg" className="mt-1 h-12 w-full text-base">
+                  Agregar horario
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         )}
       </div>
 
