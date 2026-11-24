@@ -35,17 +35,17 @@ export function CancelarButton({ bookingId }: { bookingId: string }) {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger render={<Button size="sm" variant="outline" className="text-destructive" />}>
+      <AlertDialogTrigger render={<Button variant="outline" className="h-11 px-4 text-base text-destructive" />}>
         Cancelar
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>¿Cancelar el turno?</AlertDialogTitle>
-          <AlertDialogDescription>No vas a poder deshacer esto.</AlertDialogDescription>
+          <AlertDialogTitle className="text-lg">¿Cancelar el turno?</AlertDialogTitle>
+          <AlertDialogDescription className="text-base">No vas a poder deshacer esto.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Volver</AlertDialogCancel>
-          <AlertDialogAction onClick={handleCancel} disabled={isPending}>
+          <AlertDialogCancel className="h-11 text-base" disabled={isPending}>Volver</AlertDialogCancel>
+          <AlertDialogAction className="h-11 text-base" onClick={handleCancel} disabled={isPending}>
             {isPending ? "Cancelando..." : "Sí, cancelar"}
           </AlertDialogAction>
         </AlertDialogFooter>
