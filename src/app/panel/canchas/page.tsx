@@ -20,10 +20,10 @@ export default async function CanchasPage() {
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold">Canchas</h2>
+        <h2 className="text-lg font-bold">Canchas</h2>
         {role === "owner" && (
-          <Button size="sm" render={<Link href="/panel/canchas/nueva" />}>
-            <Plus className="size-4" />
+          <Button className="h-11 px-4 text-base" render={<Link href="/panel/canchas/nueva" />}>
+            <Plus className="size-5" />
             Nueva
           </Button>
         )}
@@ -32,21 +32,23 @@ export default async function CanchasPage() {
       <div className="flex flex-col gap-2">
         {(courts ?? []).map((c) => (
           <Link key={c.id} href={`/panel/canchas/${c.id}`}>
-            <Card className="flex-row items-center justify-between gap-3 px-4 py-3">
+            <Card className="flex-row items-center justify-between gap-3 px-4 py-3.5">
               <div className="flex flex-col">
-                <span className="font-medium">{c.name}</span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-base font-semibold">{c.name}</span>
+                <span className="text-base text-muted-foreground">
                   {c.sport === "padel" ? "Pádel" : "Fútbol"}
                   {c.variant ? ` · ${c.variant}` : ""} · {c.slot_minutes} min · ${c.default_price}
                 </span>
               </div>
-              <Badge variant={c.active ? "default" : "secondary"}>{c.active ? "Activa" : "Inactiva"}</Badge>
+              <Badge variant={c.active ? "default" : "secondary"} className="h-7 px-3 text-sm">
+                {c.active ? "Activa" : "Inactiva"}
+              </Badge>
             </Card>
           </Link>
         ))}
 
         {(courts ?? []).length === 0 && (
-          <p className="py-8 text-center text-sm text-muted-foreground">Todavía no cargaste canchas.</p>
+          <p className="py-8 text-center text-base text-muted-foreground">Todavía no cargaste canchas.</p>
         )}
       </div>
     </div>

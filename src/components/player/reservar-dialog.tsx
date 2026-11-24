@@ -49,19 +49,19 @@ export function ReservarDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button size="sm" />}>Reservar</DialogTrigger>
+      <DialogTrigger render={<Button className="h-11 px-5 text-base" />}>Reservar</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Confirmar reserva</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg">Confirmar reserva</DialogTitle>
+          <DialogDescription className="text-base">
             {courtName} · {startLabel} – {endLabel} · ${price}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
+          <Button variant="outline" className="h-11 text-base" onClick={() => setOpen(false)} disabled={isPending}>
             Cancelar
           </Button>
-          <Button onClick={handleConfirm} disabled={isPending}>
+          <Button className="h-11 text-base" onClick={handleConfirm} disabled={isPending}>
             {isPending ? "Reservando..." : "Confirmar"}
           </Button>
         </DialogFooter>

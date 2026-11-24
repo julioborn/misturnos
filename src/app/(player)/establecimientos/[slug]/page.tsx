@@ -40,8 +40,8 @@ export default async function EstablishmentPage({
   if (!courts || courts.length === 0) {
     return (
       <div className="mx-auto max-w-2xl p-4 sm:p-6">
-        <h1 className="text-xl font-bold">{establishment.name}</h1>
-        <p className="mt-4 text-sm text-muted-foreground">Esta cancha todavía no tiene canchas cargadas.</p>
+        <h1 className="text-2xl font-bold">{establishment.name}</h1>
+        <p className="mt-4 text-base text-muted-foreground">Esta cancha todavía no tiene canchas cargadas.</p>
       </div>
     );
   }
@@ -59,23 +59,29 @@ export default async function EstablishmentPage({
   const slots = (availability ?? []) as AvailabilityRow[];
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-4 p-4 sm:p-6">
+    <div className="mx-auto flex max-w-2xl flex-col gap-5 p-4 sm:p-6">
       <div>
-        <h1 className="text-xl font-bold">{establishment.name}</h1>
+        <h1 className="text-2xl font-bold">{establishment.name}</h1>
         {establishment.address && (
-          <p className="text-sm text-muted-foreground">{establishment.address}</p>
+          <p className="text-base text-muted-foreground">{establishment.address}</p>
         )}
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {courts.map((c) => (
-          <a key={c.id} href={`?court=${c.id}&date=${date}`}>
-            <Badge variant={c.id === courtId ? "default" : "outline"} className="cursor-pointer px-3 py-1.5">
-              {c.name}
-              {c.variant ? ` · ${c.variant}` : ""}
-            </Badge>
-          </a>
-        ))}
+      <div>
+        <h2 className="mb-2 text-base font-semibold">Canchas disponibles</h2>
+        <div className="flex flex-wrap gap-2">
+          {courts.map((c) => (
+            <a key={c.id} href={`?court=${c.id}&date=${date}`}>
+              <Badge
+                variant={c.id === courtId ? "default" : "outline"}
+                className="h-11 cursor-pointer px-4 text-base"
+              >
+                {c.name}
+                {c.variant ? ` · ${c.variant}` : ""}
+              </Badge>
+            </a>
+          ))}
+        </div>
       </div>
 
       <DatePickerNav courtId={courtId} date={date} label={dateLabel} />
@@ -88,9 +94,9 @@ export default async function EstablishmentPage({
           return (
             <div
               key={slot.starts_at}
-              className="flex items-center justify-between rounded-lg border px-3 py-2.5"
+              className="flex items-center justify-between rounded-lg border px-4 py-3.5"
             >
-              <span className="text-sm">
+              <span className="text-base">
                 {startTime} – {endTime} · ${slot.price}
               </span>
               {slot.is_free ? (
@@ -103,7 +109,7 @@ export default async function EstablishmentPage({
                   price={slot.price}
                 />
               ) : (
-                <Button size="sm" variant="secondary" disabled>
+                <Button variant="secondary" className="h-11 px-5 text-base" disabled>
                   Ocupado
                 </Button>
               )}
@@ -112,7 +118,7 @@ export default async function EstablishmentPage({
         })}
 
         {slots.length === 0 && (
-          <p className="py-10 text-center text-sm text-muted-foreground">
+          <p className="py-10 text-center text-base text-muted-foreground">
             No hay horarios cargados para este día.
           </p>
         )}

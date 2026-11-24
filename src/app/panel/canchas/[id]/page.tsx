@@ -64,27 +64,27 @@ export default async function EditCourtPage({
     <div className="mx-auto flex max-w-md flex-col gap-6">
       <div>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-base font-semibold">{court.name}</h2>
-          <Badge variant={court.active ? "default" : "secondary"}>
+          <h2 className="text-lg font-bold">{court.name}</h2>
+          <Badge variant={court.active ? "default" : "secondary"} className="h-7 px-3 text-sm">
             {court.active ? "Activa" : "Inactiva"}
           </Badge>
         </div>
 
         {error && (
           <Alert variant="destructive" className="mb-3">
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription className="text-base">{error}</AlertDescription>
           </Alert>
         )}
         {ok && (
           <Alert className="mb-3">
-            <AlertDescription>Guardado</AlertDescription>
+            <AlertDescription className="text-base">Guardado</AlertDescription>
           </Alert>
         )}
 
         {canEdit && (
           <>
             <form action={toggleWithId} className="mb-3">
-              <Button type="submit" variant="outline" className="w-full">
+              <Button type="submit" variant="outline" className="h-12 w-full text-base">
                 {court.active ? "Desactivar cancha" : "Activar cancha"}
               </Button>
             </form>
@@ -93,22 +93,22 @@ export default async function EditCourtPage({
               <CardContent>
                 <form action={updateWithId} className="flex flex-col gap-3">
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="name">Nombre</Label>
-                    <Input id="name" name="name" defaultValue={court.name} required />
+                    <Label htmlFor="name" className="text-base">Nombre</Label>
+                    <Input id="name" name="name" defaultValue={court.name} required className="h-12 text-base" />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="sport">Deporte</Label>
-                    <NativeSelect id="sport" name="sport" defaultValue={court.sport}>
+                    <Label htmlFor="sport" className="text-base">Deporte</Label>
+                    <NativeSelect id="sport" name="sport" defaultValue={court.sport} className="h-12 text-base">
                       <option value="padel">Pádel</option>
                       <option value="futbol">Fútbol</option>
                     </NativeSelect>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="variant">Variante (opcional)</Label>
-                    <Input id="variant" name="variant" defaultValue={court.variant ?? ""} />
+                    <Label htmlFor="variant" className="text-base">Variante (opcional)</Label>
+                    <Input id="variant" name="variant" defaultValue={court.variant ?? ""} className="h-12 text-base" />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="slot_minutes">Duración del turno (minutos)</Label>
+                    <Label htmlFor="slot_minutes" className="text-base">Duración del turno (minutos)</Label>
                     <Input
                       id="slot_minutes"
                       name="slot_minutes"
@@ -116,10 +116,11 @@ export default async function EditCourtPage({
                       min={15}
                       max={480}
                       defaultValue={court.slot_minutes}
+                      className="h-12 text-base"
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="default_price">Precio por defecto</Label>
+                    <Label htmlFor="default_price" className="text-base">Precio por defecto</Label>
                     <Input
                       id="default_price"
                       name="default_price"
@@ -127,9 +128,10 @@ export default async function EditCourtPage({
                       min={0}
                       step="0.01"
                       defaultValue={court.default_price}
+                      className="h-12 text-base"
                     />
                   </div>
-                  <Button type="submit" className="mt-1 w-full">
+                  <Button type="submit" className="mt-1 h-12 w-full text-base">
                     Guardar
                   </Button>
                 </form>
@@ -201,22 +203,28 @@ export default async function EditCourtPage({
       </div>
 
       <div>
-        <h3 className="mb-1 text-sm font-semibold text-muted-foreground">Precios por franja</h3>
-        <p className="mb-2 text-xs text-muted-foreground">
+        <h3 className="mb-1 text-lg font-bold">Precios por franja</h3>
+        <p className="mb-3 text-base text-muted-foreground">
           Si no cargás ninguno, se usa el precio por defecto de la cancha.
         </p>
-        <div className="mb-3 flex flex-col gap-1">
+        <div className="mb-4 flex flex-col gap-2">
           {(prices ?? []).map((p) => {
             const removeWithIds = removeCourtPrice.bind(null, court.id, p.id);
             return (
-              <Card key={p.id} className="flex-row items-center justify-between gap-3 px-3 py-2 text-sm">
-                <span>
-                  {p.weekday === null ? "Todos los días" : WEEKDAYS[p.weekday]}: {p.from_time.slice(0, 5)} – {p.to_time.slice(0, 5)} · ${p.price}
-                </span>
+              <Card key={p.id} className="flex-row items-center justify-between gap-3 px-4 py-3.5">
+                <div className="flex flex-col">
+                  <span className="text-base font-semibold">
+                    {p.weekday === null ? "Todos los días" : WEEKDAYS[p.weekday]}
+                  </span>
+                  <span className="text-base text-muted-foreground">
+                    {p.from_time.slice(0, 5)} – {p.to_time.slice(0, 5)} · ${p.price}
+                  </span>
+                </div>
                 {canEdit && (
                   <form action={removeWithIds}>
-                    <Button type="submit" variant="ghost" size="sm" className="text-destructive">
-                      Quitar
+                    <Button type="submit" variant="ghost" size="icon" className="size-11 text-destructive">
+                      <Trash2 className="size-5" />
+                      <span className="sr-only">Quitar</span>
                     </Button>
                   </form>
                 )}
@@ -224,24 +232,42 @@ export default async function EditCourtPage({
             );
           })}
           {(prices ?? []).length === 0 && (
-            <p className="text-xs text-muted-foreground">Sin franjas de precio cargadas.</p>
+            <p className="text-base text-muted-foreground">Sin franjas de precio cargadas.</p>
           )}
         </div>
         {canEdit && (
-          <form action={addPriceWithId} className="flex flex-wrap items-end gap-2">
-            <NativeSelect name="weekday" className="w-auto">
-              <option value="">Todos los días</option>
-              {WEEKDAYS.map((w, i) => (
-                <option key={i} value={i}>{w}</option>
-              ))}
-            </NativeSelect>
-            <Input type="time" name="from_time" required className="w-auto" />
-            <Input type="time" name="to_time" required className="w-auto" />
-            <Input type="number" name="price" min={0} step="0.01" placeholder="Precio" required className="w-24" />
-            <Button type="submit" variant="outline" size="sm">
-              Agregar
-            </Button>
-          </form>
+          <Card>
+            <CardContent>
+              <form action={addPriceWithId} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="price_weekday" className="text-base">Día</Label>
+                  <NativeSelect id="price_weekday" name="weekday" className="h-12 text-base">
+                    <option value="">Todos los días</option>
+                    {WEEKDAYS.map((w, i) => (
+                      <option key={i} value={i}>{w}</option>
+                    ))}
+                  </NativeSelect>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="from_time" className="text-base">Desde</Label>
+                    <Input id="from_time" type="time" name="from_time" required className="h-12 text-base" />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor="to_time" className="text-base">Hasta</Label>
+                    <Input id="to_time" type="time" name="to_time" required className="h-12 text-base" />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="price" className="text-base">Precio</Label>
+                  <Input id="price" type="number" name="price" min={0} step="0.01" required className="h-12 text-base" />
+                </div>
+                <Button type="submit" size="lg" className="mt-1 h-12 w-full text-base">
+                  Agregar precio
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
