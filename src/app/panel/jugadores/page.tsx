@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { getActiveEstablishment } from "@/lib/panel/establishment";
 import { blockPlayer, unblockPlayer } from "./actions";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export default async function JugadoresPage() {
   const { establishment } = await getActiveEstablishment();
@@ -39,7 +41,7 @@ export default async function JugadoresPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="mx-auto flex max-w-xl flex-col gap-6">
       <div>
         <h2 className="mb-2 text-base font-semibold">Ausentes</h2>
         <div className="flex flex-col gap-2">
@@ -47,23 +49,23 @@ export default async function JugadoresPage() {
             const info = nameByUser.get(n.user_id!);
             const blockWithId = blockPlayer.bind(null, n.user_id!);
             return (
-              <div key={n.user_id} className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5">
+              <Card key={n.user_id} className="flex-row items-center justify-between gap-3 px-4 py-3">
                 <div className="flex flex-col text-sm">
                   <span>{info?.name ?? "Jugador"}{info?.phone ? ` · ${info.phone}` : ""}</span>
-                  <span className="text-xs text-gray-500">{n.no_shows} ausencias</span>
+                  <span className="text-xs text-muted-foreground">{n.no_shows} ausencias</span>
                 </div>
                 {!blockedIds.has(n.user_id!) && (
                   <form action={blockWithId}>
-                    <button className="rounded-lg border border-red-300 px-2.5 py-1 text-xs font-medium text-red-700">
+                    <Button type="submit" variant="outline" size="sm" className="text-destructive">
                       Bloquear
-                    </button>
+                    </Button>
                   </form>
                 )}
-              </div>
+              </Card>
             );
           })}
           {(noShows ?? []).length === 0 && (
-            <p className="text-sm text-gray-500">Sin ausencias registradas.</p>
+            <p className="text-sm text-muted-foreground">Sin ausencias registradas.</p>
           )}
         </div>
       </div>
@@ -75,21 +77,21 @@ export default async function JugadoresPage() {
             const info = nameByUser.get(b.user_id);
             const unblockWithId = unblockPlayer.bind(null, b.user_id);
             return (
-              <div key={b.user_id} className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5">
+              <Card key={b.user_id} className="flex-row items-center justify-between gap-3 px-4 py-3">
                 <div className="flex flex-col text-sm">
                   <span>{info?.name ?? "Jugador"}{info?.phone ? ` · ${info.phone}` : ""}</span>
-                  {b.reason && <span className="text-xs text-gray-500">{b.reason}</span>}
+                  {b.reason && <span className="text-xs text-muted-foreground">{b.reason}</span>}
                 </div>
                 <form action={unblockWithId}>
-                  <button className="rounded-lg border border-gray-300 px-2.5 py-1 text-xs font-medium">
+                  <Button type="submit" variant="outline" size="sm">
                     Desbloquear
-                  </button>
+                  </Button>
                 </form>
-              </div>
+              </Card>
             );
           })}
           {(blocks ?? []).length === 0 && (
-            <p className="text-sm text-gray-500">No bloqueaste a ningún jugador.</p>
+            <p className="text-sm text-muted-foreground">No bloqueaste a ningún jugador.</p>
           )}
         </div>
       </div>

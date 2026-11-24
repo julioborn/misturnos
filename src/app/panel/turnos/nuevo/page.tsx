@@ -1,6 +1,10 @@
 import { redirect } from "next/navigation";
 import { utcToLocal } from "@/lib/time/argentina";
 import { createManualBooking, blockSlot } from "../actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default async function NuevoTurnoPage({
   searchParams,
@@ -30,40 +34,37 @@ export default async function NuevoTurnoPage({
       <h2 className="text-base font-semibold">
         {isBlock ? "Bloquear horario" : "Reserva manual"}
       </h2>
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-muted-foreground">
         {date} · {time} – {endTime}
         {!isBlock && price ? ` · $${price}` : ""}
       </p>
 
-      {error && <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       <form action={action} className="flex flex-col gap-3">
         {!isBlock && (
           <>
-            <input
-              name="guest_name"
-              placeholder="Nombre"
-              required
-              className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-            />
-            <input
-              name="guest_phone"
-              placeholder="Teléfono (opcional)"
-              className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-            />
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="guest_name">Nombre</Label>
+              <Input id="guest_name" name="guest_name" required />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="guest_phone">Teléfono (opcional)</Label>
+              <Input id="guest_phone" name="guest_phone" />
+            </div>
           </>
         )}
-        <input
-          name="note"
-          placeholder="Nota (opcional)"
-          className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-        />
-        <button
-          type="submit"
-          className="mt-1 rounded-lg bg-emerald-600 px-3 py-2.5 text-base font-medium text-white active:bg-emerald-700"
-        >
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="note">Nota (opcional)</Label>
+          <Input id="note" name="note" />
+        </div>
+        <Button type="submit" className="mt-1 w-full">
           {isBlock ? "Bloquear" : "Reservar"}
-        </button>
+        </Button>
       </form>
     </div>
   );

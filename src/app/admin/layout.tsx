@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -17,10 +19,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-        <h1 className="text-lg font-bold">Mis Turnos · Admin</h1>
+      <header className="flex items-center justify-between border-b px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Logo size={24} showText={false} />
+          <span className="text-sm font-semibold text-muted-foreground">Admin</span>
+        </div>
         <form action={signOut}>
-          <button className="text-sm font-medium text-gray-500">Salir</button>
+          <Button variant="ghost" size="sm">
+            Salir
+          </Button>
         </form>
       </header>
       <main className="flex-1 px-4 py-4">{children}</main>

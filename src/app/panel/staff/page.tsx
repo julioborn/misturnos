@@ -2,6 +2,11 @@ import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { getActiveEstablishment } from "@/lib/panel/establishment";
 import { createStaffMember, removeStaffMember } from "./actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default async function StaffPage({
   searchParams,
@@ -43,69 +48,55 @@ export default async function StaffPage({
             const info = infoById.get(id);
             const removeWithId = removeStaffMember.bind(null, id);
             return (
-              <div key={id} className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5">
+              <Card key={id} className="flex-row items-center justify-between gap-3 px-4 py-3">
                 <span className="text-sm">
                   {info?.name ?? "Staff"}{info?.phone ? ` · ${info.phone}` : ""}
                 </span>
                 <form action={removeWithId}>
-                  <button className="rounded-lg border border-red-300 px-2.5 py-1 text-xs font-medium text-red-700">
+                  <Button type="submit" variant="outline" size="sm" className="text-destructive">
                     Quitar
-                  </button>
+                  </Button>
                 </form>
-              </div>
+              </Card>
             );
           })}
           {staffIds.length === 0 && (
-            <p className="text-sm text-gray-500">Todavía no sumaste staff.</p>
+            <p className="text-sm text-muted-foreground">Todavía no sumaste staff.</p>
           )}
         </div>
       </div>
 
       <div>
-        <h3 className="mb-2 text-sm font-semibold text-gray-700">Agregar staff</h3>
-        {error && <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+        <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Agregar staff</h3>
+        {error && (
+          <Alert variant="destructive" className="mb-3">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
         <form action={createStaffMember} className="flex flex-col gap-3">
-          <input
-            name="full_name"
-            placeholder="Nombre y apellido"
-            required
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            name="dni"
-            inputMode="numeric"
-            placeholder="DNI (sin puntos, para entrar)"
-            required
-            pattern="\d{7,8}"
-            title="7 u 8 números, sin puntos"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            name="phone"
-            placeholder="Teléfono (opcional)"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            name="email"
-            type="email"
-            placeholder="Email"
-            required
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            name="password"
-            type="text"
-            placeholder="Contraseña"
-            required
-            minLength={6}
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <button
-            type="submit"
-            className="mt-1 rounded-lg bg-emerald-600 px-3 py-2.5 text-base font-medium text-white active:bg-emerald-700"
-          >
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="full_name">Nombre y apellido</Label>
+            <Input id="full_name" name="full_name" required />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="dni">DNI (para entrar)</Label>
+            <Input id="dni" name="dni" inputMode="numeric" placeholder="Sin puntos" required pattern="\d{7,8}" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="phone">Teléfono (opcional)</Label>
+            <Input id="phone" name="phone" />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" name="email" type="email" required />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="password">Contraseña</Label>
+            <Input id="password" name="password" type="text" required minLength={6} />
+          </div>
+          <Button type="submit" className="mt-1 w-full">
             Agregar
-          </button>
+          </Button>
         </form>
       </div>
     </div>

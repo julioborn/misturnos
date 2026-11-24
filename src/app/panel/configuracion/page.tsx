@@ -1,5 +1,10 @@
 import { getActiveEstablishment } from "@/lib/panel/establishment";
 import { updateEstablishmentProfile } from "./actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default async function ConfiguracionPage({
   searchParams,
@@ -15,58 +20,54 @@ export default async function ConfiguracionPage({
     <div className="mx-auto flex max-w-md flex-col gap-4">
       <h2 className="text-base font-semibold">Configuración</h2>
 
-      {error && <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-      {ok && <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">Guardado</p>}
-
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      {ok && (
+        <Alert>
+          <AlertDescription>Guardado</AlertDescription>
+        </Alert>
+      )}
       {!canEdit && (
-        <p className="rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-600">
-          Solo el dueño puede editar esta sección.
-        </p>
+        <Alert>
+          <AlertDescription>Solo el dueño puede editar esta sección.</AlertDescription>
+        </Alert>
       )}
 
-      <fieldset disabled={!canEdit}>
+      <fieldset disabled={!canEdit} className="flex flex-col gap-3">
         <form action={updateEstablishmentProfile} className="flex flex-col gap-3">
-          <input
-            name="name"
-            defaultValue={establishment.name}
-            required
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base disabled:bg-gray-50"
-          />
-          <textarea
-            name="description"
-            defaultValue={establishment.description ?? ""}
-            placeholder="Descripción"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base disabled:bg-gray-50"
-          />
-          <input
-            name="address"
-            defaultValue={establishment.address ?? ""}
-            placeholder="Dirección"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base disabled:bg-gray-50"
-          />
-          <input
-            name="phone"
-            defaultValue={establishment.phone ?? ""}
-            placeholder="Teléfono"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base disabled:bg-gray-50"
-          />
-          <label className="flex flex-col gap-1 text-sm text-gray-600">
-            Cancelación hasta (horas antes del turno)
-            <input
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="name">Nombre</Label>
+            <Input id="name" name="name" defaultValue={establishment.name} required />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="description">Descripción</Label>
+            <Textarea id="description" name="description" defaultValue={establishment.description ?? ""} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="address">Dirección</Label>
+            <Input id="address" name="address" defaultValue={establishment.address ?? ""} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="phone">Teléfono</Label>
+            <Input id="phone" name="phone" defaultValue={establishment.phone ?? ""} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="cancel_hours_before">Cancelación hasta (horas antes del turno)</Label>
+            <Input
+              id="cancel_hours_before"
               name="cancel_hours_before"
               type="number"
               min={0}
               defaultValue={establishment.cancel_hours_before}
-              className="rounded-lg border border-gray-300 px-3 py-2.5 text-base disabled:bg-gray-50"
             />
-          </label>
+          </div>
           {canEdit && (
-            <button
-              type="submit"
-              className="mt-1 rounded-lg bg-emerald-600 px-3 py-2.5 text-base font-medium text-white active:bg-emerald-700"
-            >
+            <Button type="submit" className="mt-1 w-full">
               Guardar
-            </button>
+            </Button>
           )}
         </form>
       </fieldset>

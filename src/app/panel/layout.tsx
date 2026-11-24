@@ -1,8 +1,10 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getActiveEstablishment } from "@/lib/panel/establishment";
 import { signOut } from "@/app/actions";
 import { switchEstablishment } from "./switch-actions";
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { PanelNav } from "@/components/panel/panel-nav";
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const { user, establishment, role, memberships } = await getActiveEstablishment();
@@ -11,11 +13,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   if (!establishment) {
     return (
       <div className="flex min-h-full flex-1 flex-col items-center justify-center gap-4 px-4 text-center">
-        <p className="text-sm text-gray-500">No sos miembro de ningún establecimiento todavía.</p>
+        <p className="text-sm text-muted-foreground">No sos miembro de ningún establecimiento todavía.</p>
         <form action={signOut}>
-          <button className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium">
-            Cerrar sesión
-          </button>
+          <Button variant="outline">Cerrar sesión</Button>
         </form>
       </div>
     );
@@ -31,36 +31,39 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-        <div className="flex flex-col">
-          <h1 className="text-base font-bold">{establishment.name}</h1>
-          {memberships.length > 1 && (
-            <form action={switchEstablishment} className="flex items-center gap-1">
-              <select name="establishment_id" defaultValue={establishment.id} className="text-xs text-gray-500">
-                {memberships.map((m) => (
-                  <option key={m.establishment_id} value={m.establishment_id}>
-                    {m.establishments?.name}
-                  </option>
-                ))}
-              </select>
-              <button type="submit" className="text-xs font-medium text-emerald-700 underline">
-                Cambiar
-              </button>
-            </form>
-          )}
+      <header className="flex items-center justify-between border-b px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Logo size={24} showText={false} />
+          <div className="flex flex-col">
+            <h1 className="text-sm font-bold leading-tight">{establishment.name}</h1>
+            {memberships.length > 1 && (
+              <form action={switchEstablishment} className="flex items-center gap-1">
+                <select
+                  name="establishment_id"
+                  defaultValue={establishment.id}
+                  className="text-xs text-muted-foreground"
+                >
+                  {memberships.map((m) => (
+                    <option key={m.establishment_id} value={m.establishment_id}>
+                      {m.establishments?.name}
+                    </option>
+                  ))}
+                </select>
+                <button type="submit" className="text-xs font-medium underline underline-offset-2">
+                  Cambiar
+                </button>
+              </form>
+            )}
+          </div>
         </div>
         <form action={signOut}>
-          <button className="text-sm font-medium text-gray-500">Salir</button>
+          <Button variant="ghost" size="sm">
+            Salir
+          </Button>
         </form>
       </header>
 
-      <nav className="flex border-b border-gray-200 text-sm">
-        {tabs.map((t) => (
-          <Link key={t.href} href={t.href} className="flex-1 px-2 py-2.5 text-center font-medium text-gray-600">
-            {t.label}
-          </Link>
-        ))}
-      </nav>
+      <PanelNav tabs={tabs} />
 
       <main className="flex-1 px-4 py-4">{children}</main>
     </div>

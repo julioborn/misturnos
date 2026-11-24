@@ -1,6 +1,13 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { updateEstablishment, toggleActive } from "../actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default async function EditEstablishmentPage({
   params,
@@ -25,76 +32,70 @@ export default async function EditEstablishmentPage({
   const toggleWithId = toggleActive.bind(null, establishment.id, !establishment.active);
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-6">
+    <div className="mx-auto flex max-w-md flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold">{establishment.name}</h2>
-        <span
-          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-            establishment.active ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"
-          }`}
-        >
+        <Badge variant={establishment.active ? "default" : "secondary"}>
           {establishment.active ? "Activo" : "Suspendido"}
-        </span>
+        </Badge>
       </div>
 
-      {error && <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-      {ok && <p className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">Guardado</p>}
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      {ok && (
+        <Alert>
+          <AlertDescription>Guardado</AlertDescription>
+        </Alert>
+      )}
 
       <form action={toggleWithId}>
-        <button className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm font-medium">
+        <Button type="submit" variant="outline" className="w-full">
           {establishment.active ? "Suspender establecimiento" : "Activar establecimiento"}
-        </button>
+        </Button>
       </form>
 
-      <form action={updateWithId} className="flex flex-col gap-3">
-        <input
-          name="name"
-          defaultValue={establishment.name}
-          required
-          className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-        />
-        <input
-          name="slug"
-          defaultValue={establishment.slug}
-          required
-          pattern="[a-z0-9-]+"
-          className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-        />
-        <textarea
-          name="description"
-          defaultValue={establishment.description ?? ""}
-          placeholder="Descripción"
-          className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-        />
-        <input
-          name="address"
-          defaultValue={establishment.address ?? ""}
-          placeholder="Dirección"
-          className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-        />
-        <input
-          name="phone"
-          defaultValue={establishment.phone ?? ""}
-          placeholder="Teléfono"
-          className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-        />
-        <label className="flex flex-col gap-1 text-sm text-gray-600">
-          Cancelación hasta (horas antes)
-          <input
-            name="cancel_hours_before"
-            type="number"
-            min={0}
-            defaultValue={establishment.cancel_hours_before}
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-        </label>
-        <button
-          type="submit"
-          className="mt-1 rounded-lg bg-emerald-600 px-3 py-2.5 text-base font-medium text-white active:bg-emerald-700"
-        >
-          Guardar
-        </button>
-      </form>
+      <Card>
+        <CardContent>
+          <form action={updateWithId} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="name">Nombre</Label>
+              <Input id="name" name="name" defaultValue={establishment.name} required />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="slug">Slug</Label>
+              <Input id="slug" name="slug" defaultValue={establishment.slug} required pattern="[a-z0-9-]+" />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="description">Descripción</Label>
+              <Textarea id="description" name="description" defaultValue={establishment.description ?? ""} />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="address">Dirección</Label>
+              <Input id="address" name="address" defaultValue={establishment.address ?? ""} />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="phone">Teléfono</Label>
+              <Input id="phone" name="phone" defaultValue={establishment.phone ?? ""} />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="cancel_hours_before">Cancelación hasta (horas antes)</Label>
+              <Input
+                id="cancel_hours_before"
+                name="cancel_hours_before"
+                type="number"
+                min={0}
+                defaultValue={establishment.cancel_hours_before}
+              />
+            </div>
+            <Button type="submit" className="mt-1 w-full">
+              Guardar
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

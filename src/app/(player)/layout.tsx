@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
 import { PlayerNav } from "@/components/player/player-nav";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 
 export default async function PlayerLayout({ children }: { children: React.ReactNode }) {
@@ -19,8 +20,8 @@ export default async function PlayerLayout({ children }: { children: React.React
   return (
     <div className="flex min-h-full flex-1 flex-col pb-16 sm:pb-0">
       <header className="flex items-center justify-between border-b px-4 py-3 sm:px-6">
-        <Link href="/" className="text-base font-bold">
-          Mis Turnos
+        <Link href="/">
+          <Logo size={26} />
         </Link>
         <PlayerNav unreadCount={count ?? 0} />
         <form action={signOut}>

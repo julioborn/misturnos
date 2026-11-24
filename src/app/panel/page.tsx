@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getActiveEstablishment } from "@/lib/panel/establishment";
 import { todayLocal, addDaysLocal, utcToLocal } from "@/lib/time/argentina";
 import { cancelBooking, markNoShow } from "./turnos/actions";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 
 type AvailabilityRow = { starts_at: string; ends_at: string; is_free: boolean; price: number };
 type BookingRow = {
@@ -43,11 +47,11 @@ export default async function AgendaPage({
   if (!courts || courts.length === 0) {
     return (
       <div className="flex flex-col items-center gap-3 py-10 text-center">
-        <p className="text-sm text-gray-500">Todavía no hay canchas activas.</p>
+        <p className="text-sm text-muted-foreground">Todavía no hay canchas activas.</p>
         {role === "owner" && (
-          <Link href="/panel/canchas/nueva" className="text-sm font-medium text-emerald-700 underline">
+          <Button variant="outline" size="sm" render={<Link href="/panel/canchas/nueva" />}>
             Crear una cancha
-          </Link>
+          </Button>
         )}
       </div>
     );
@@ -82,35 +86,25 @@ export default async function AgendaPage({
   const bookingByStart = new Map(bookings.map((b) => [new Date(b.starts_at).getTime(), b]));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-xl flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         {courts.map((c) => (
-          <Link
-            key={c.id}
-            href={`/panel?court=${c.id}&date=${date}`}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium ${
-              c.id === courtId ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-700"
-            }`}
-          >
-            {c.name}
+          <Link key={c.id} href={`/panel?court=${c.id}&date=${date}`}>
+            <Badge variant={c.id === courtId ? "default" : "outline"} className="cursor-pointer px-3 py-1.5">
+              {c.name}
+            </Badge>
           </Link>
         ))}
       </div>
 
       <div className="flex items-center justify-between">
-        <Link
-          href={`/panel?court=${courtId}&date=${addDaysLocal(date, -1)}`}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
-        >
-          ← Anterior
-        </Link>
+        <Button variant="outline" size="icon" render={<Link href={`/panel?court=${courtId}&date=${addDaysLocal(date, -1)}`} />}>
+          <ChevronLeft className="size-4" />
+        </Button>
         <span className="text-sm font-medium">{date}</span>
-        <Link
-          href={`/panel?court=${courtId}&date=${addDaysLocal(date, 1)}`}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm"
-        >
-          Siguiente →
-        </Link>
+        <Button variant="outline" size="icon" render={<Link href={`/panel?court=${courtId}&date=${addDaysLocal(date, 1)}`} />}>
+          <ChevronRight className="size-4" />
+        </Button>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -123,25 +117,34 @@ export default async function AgendaPage({
 
           if (slot.is_free) {
             return (
-              <div key={slot.starts_at} className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5">
+              <Card key={slot.starts_at} className="flex-row items-center justify-between gap-3 px-4 py-3">
                 <span className="text-sm">
                   {startTime} – {endTime} · ${slot.price}
                 </span>
                 <div className="flex gap-2">
-                  <Link
-                    href={`/panel/turnos/nuevo?court=${courtId}&starts_at=${encodeURIComponent(slot.starts_at)}&ends_at=${encodeURIComponent(slot.ends_at)}&price=${slot.price}&mode=manual`}
-                    className="rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white"
+                  <Button
+                    size="sm"
+                    render={
+                      <Link
+                        href={`/panel/turnos/nuevo?court=${courtId}&starts_at=${encodeURIComponent(slot.starts_at)}&ends_at=${encodeURIComponent(slot.ends_at)}&price=${slot.price}&mode=manual`}
+                      />
+                    }
                   >
                     Reservar
-                  </Link>
-                  <Link
-                    href={`/panel/turnos/nuevo?court=${courtId}&starts_at=${encodeURIComponent(slot.starts_at)}&ends_at=${encodeURIComponent(slot.ends_at)}&mode=block`}
-                    className="rounded-lg border border-gray-300 px-2.5 py-1 text-xs font-medium"
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    render={
+                      <Link
+                        href={`/panel/turnos/nuevo?court=${courtId}&starts_at=${encodeURIComponent(slot.starts_at)}&ends_at=${encodeURIComponent(slot.ends_at)}&mode=block`}
+                      />
+                    }
                   >
                     Bloquear
-                  </Link>
+                  </Button>
                 </div>
-              </div>
+              </Card>
             );
           }
 
@@ -150,13 +153,13 @@ export default async function AgendaPage({
           const statusLabel = booking ? STATUS_LABEL[booking.status] ?? booking.status : "Pasado";
 
           return (
-            <div key={slot.starts_at} className="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5">
+            <Card key={slot.starts_at} className="flex-row items-center justify-between gap-3 bg-muted/40 px-4 py-3">
               <div className="flex flex-col text-sm">
                 <span>
                   {startTime} – {endTime} · {statusLabel}
                 </span>
                 {booking?.guest_name && (
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {booking.guest_name}
                     {booking.guest_phone ? ` · ${booking.guest_phone}` : ""}
                     {booking.source === "manual" ? " (manual)" : ""}
@@ -167,24 +170,24 @@ export default async function AgendaPage({
                 <div className="flex gap-2">
                   {booking.status === "confirmed" && started && (
                     <form action={noShowAction!}>
-                      <button className="rounded-lg border border-gray-300 px-2.5 py-1 text-xs font-medium">
+                      <Button type="submit" variant="outline" size="sm">
                         Ausente
-                      </button>
+                      </Button>
                     </form>
                   )}
                   <form action={cancelAction!}>
-                    <button className="rounded-lg border border-red-300 px-2.5 py-1 text-xs font-medium text-red-700">
+                    <Button type="submit" variant="outline" size="sm" className="text-destructive">
                       {booking.status === "blocked" ? "Desbloquear" : "Cancelar"}
-                    </button>
+                    </Button>
                   </form>
                 </div>
               )}
-            </div>
+            </Card>
           );
         })}
 
         {slots.length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-500">
+          <p className="py-8 text-center text-sm text-muted-foreground">
             Esta cancha no tiene horarios cargados para este día.
           </p>
         )}

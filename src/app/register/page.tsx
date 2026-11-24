@@ -1,4 +1,12 @@
 import Link from "next/link";
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { DotPattern } from "@/components/ui/dot-pattern";
 import { signUp } from "./actions";
 
 export default async function RegisterPage({
@@ -9,76 +17,77 @@ export default async function RegisterPage({
   const { error } = await searchParams;
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <h1 className="mb-1 text-center text-2xl font-bold">Creá tu cuenta</h1>
-        <p className="mb-6 text-center text-sm text-gray-500">
-          Con una cuenta reservás en cualquier cancha asociada. Vas a entrar con tu DNI.
-        </p>
+    <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-4 py-10">
+      <DotPattern className="[mask-image:radial-gradient(ellipse_60%_60%_at_center,black,transparent)]" />
 
-        {error && (
-          <p className="mb-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
-          </p>
-        )}
+      <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-6">
+        <Logo size={56} showText={false} />
 
-        <form action={signUp} className="flex flex-col gap-3">
-          <input
-            type="text"
-            name="full_name"
-            placeholder="Nombre y apellido"
-            required
-            autoComplete="name"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            type="text"
-            inputMode="numeric"
-            name="dni"
-            placeholder="DNI (sin puntos)"
-            required
-            pattern="\d{7,8}"
-            title="7 u 8 números, sin puntos"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Teléfono (opcional)"
-            autoComplete="tel"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email (para avisos, no para entrar)"
-            required
-            autoComplete="email"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            required
-            minLength={6}
-            autoComplete="new-password"
-            className="rounded-lg border border-gray-300 px-3 py-2.5 text-base"
-          />
-          <button
-            type="submit"
-            className="mt-1 rounded-lg bg-emerald-600 px-3 py-2.5 text-base font-medium text-white active:bg-emerald-700"
-          >
-            Crear cuenta
-          </button>
-        </form>
+        <Card className="relative w-full overflow-hidden">
+          <BorderBeam duration={8} size={120} colorFrom="#18181b" colorTo="#a1a1aa" />
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">Creá tu cuenta</CardTitle>
+            <CardDescription>
+              Con una cuenta reservás en cualquier cancha asociada. Vas a entrar con tu DNI.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {error && (
+              <Alert variant="destructive" className="mb-4">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
-        <p className="mt-6 text-center text-sm text-gray-500">
-          ¿Ya tenés cuenta?{" "}
-          <Link href="/login" className="font-medium text-emerald-700">
-            Iniciá sesión
-          </Link>
-        </p>
+            <form action={signUp} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="full_name">Nombre y apellido</Label>
+                <Input id="full_name" name="full_name" required autoComplete="name" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="dni">DNI</Label>
+                <Input
+                  id="dni"
+                  type="text"
+                  inputMode="numeric"
+                  name="dni"
+                  placeholder="Sin puntos"
+                  required
+                  pattern="\d{7,8}"
+                  title="7 u 8 números, sin puntos"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="phone">Teléfono (opcional)</Label>
+                <Input id="phone" type="tel" name="phone" autoComplete="tel" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" name="email" placeholder="Para avisos, no para entrar" required autoComplete="email" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="password">Contraseña</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  name="password"
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                />
+              </div>
+              <Button type="submit" className="mt-2 w-full">
+                Crear cuenta
+              </Button>
+            </form>
+
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              ¿Ya tenés cuenta?{" "}
+              <Link href="/login" className="font-medium text-foreground underline underline-offset-4">
+                Iniciá sesión
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );

@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { ChevronRight, Plus } from "lucide-react";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { toggleActive } from "./actions";
 
 export default async function AdminEstablishmentsPage() {
@@ -45,15 +49,13 @@ export default async function AdminEstablishmentsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="mx-auto flex max-w-xl flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold">Establecimientos</h2>
-        <Link
-          href="/admin/nuevo"
-          className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white"
-        >
-          + Nuevo
-        </Link>
+        <Button size="sm" render={<Link href="/admin/nuevo" />}>
+          <Plus className="size-4" />
+          Nuevo
+        </Button>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -61,36 +63,34 @@ export default async function AdminEstablishmentsPage() {
           const owner = ownerByEstablishment.get(est.id);
           const toggle = toggleActive.bind(null, est.id, !est.active);
           return (
-            <div
-              key={est.id}
-              className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-3"
-            >
-              <Link href={`/admin/${est.id}`} className="flex flex-col">
-                <span className="font-medium">{est.name}</span>
-                <span className="text-xs text-gray-500">
-                  /{est.slug} · {owner?.name || owner?.email || "sin dueño"}
-                </span>
+            <Card key={est.id} className="flex-row items-center justify-between gap-3 px-4 py-3">
+              <Link href={`/admin/${est.id}`} className="flex flex-1 items-center gap-2">
+                <div className="flex flex-col">
+                  <span className="font-medium">{est.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    /{est.slug} · {owner?.name || owner?.email || "sin dueño"}
+                  </span>
+                </div>
+                <ChevronRight className="ml-auto size-4 text-muted-foreground" />
               </Link>
               <div className="flex items-center gap-2">
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                    est.active ? "bg-emerald-100 text-emerald-700" : "bg-gray-200 text-gray-600"
-                  }`}
-                >
+                <Badge variant={est.active ? "default" : "secondary"}>
                   {est.active ? "Activo" : "Suspendido"}
-                </span>
+                </Badge>
                 <form action={toggle}>
-                  <button className="text-xs font-medium text-gray-500 underline">
+                  <Button type="submit" variant="outline" size="sm">
                     {est.active ? "Suspender" : "Activar"}
-                  </button>
+                  </Button>
                 </form>
               </div>
-            </div>
+            </Card>
           );
         })}
 
         {(establishments ?? []).length === 0 && (
-          <p className="py-8 text-center text-sm text-gray-500">Todavía no hay establecimientos.</p>
+          <p className="py-8 text-center text-sm text-muted-foreground">
+            Todavía no hay establecimientos.
+          </p>
         )}
       </div>
     </div>
