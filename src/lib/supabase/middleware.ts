@@ -76,9 +76,9 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL(homePath, request.url));
   }
 
-  if (pathname === "/" && (isSuperAdmin || isOwnerOrStaff)) {
-    return NextResponse.redirect(new URL(homePath, request.url));
-  }
+  // A partir de acá el usuario puede moverse libremente entre su panel
+  // (admin/dueño/staff) y la vista de jugador en "/" — no lo forzamos a
+  // quedarse en su "home" de rol, solo lo mandamos ahí recién logueado.
 
   return response;
 }

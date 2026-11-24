@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { User } from "lucide-react";
 import { getActiveEstablishment } from "@/lib/panel/establishment";
 import { signOut } from "@/app/actions";
 import { switchEstablishment } from "./switch-actions";
@@ -56,11 +58,17 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             )}
           </div>
         </div>
-        <form action={signOut}>
-          <Button variant="ghost" size="sm">
-            Salir
+        <div className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" render={<Link href="/" />}>
+            <User className="size-4" />
+            <span className="hidden sm:inline">Jugador</span>
           </Button>
-        </form>
+          <form action={signOut}>
+            <Button variant="ghost" size="sm">
+              Salir
+            </Button>
+          </form>
+        </div>
       </header>
 
       <PanelNav tabs={tabs} />
