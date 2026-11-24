@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { ShieldCheck, LayoutDashboard } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
-import { PlayerNav } from "@/components/player/player-nav";
+import { PlayerTopNav, PlayerBottomNav } from "@/components/player/player-nav";
 import { Button } from "@/components/ui/button";
 
 export default async function PlayerLayout({ children }: { children: React.ReactNode }) {
@@ -38,7 +38,7 @@ export default async function PlayerLayout({ children }: { children: React.React
         <Link href="/" className="text-base font-bold tracking-tight">
           Mis Turnos
         </Link>
-        <PlayerNav unreadCount={count ?? 0} />
+        <PlayerTopNav unreadCount={count ?? 0} />
         <div className="flex items-center gap-1">
           {profile?.is_super_admin && (
             <Button variant="ghost" size="sm" render={<Link href="/admin" />}>
@@ -61,6 +61,8 @@ export default async function PlayerLayout({ children }: { children: React.React
       </header>
 
       <main className="flex-1">{children}</main>
+
+      <PlayerBottomNav unreadCount={count ?? 0} />
     </div>
   );
 }
