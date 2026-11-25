@@ -24,3 +24,13 @@ export async function markNotificationReadAction(notificationId: string) {
     .update({ read_at: new Date().toISOString() })
     .eq("id", notificationId);
 }
+
+export async function registerDeviceTokenAction(token: string, platform: "android" | "ios" | "web") {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase
+    .from("device_tokens")
+    .upsert({ user_id: user.id, token, platform }, { onConflict: "token" });
+}

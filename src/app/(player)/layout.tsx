@@ -4,6 +4,7 @@ import { ShieldCheck, LayoutDashboard } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
 import { PlayerTopNav, PlayerBottomNav } from "@/components/player/player-nav";
+import { PushRegistration } from "@/components/player/push-registration";
 import { Button } from "@/components/ui/button";
 
 export default async function PlayerLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +35,7 @@ export default async function PlayerLayout({ children }: { children: React.React
 
   return (
     <div className="flex min-h-full flex-1 flex-col pb-16 sm:pb-0">
+      <PushRegistration />
       <header className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b bg-background/80 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/60 sm:px-6">
         <Link href="/" className="text-base font-bold tracking-tight">
           Mis Turnos

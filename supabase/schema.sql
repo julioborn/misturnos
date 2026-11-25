@@ -247,6 +247,16 @@ create table public.device_tokens (
 );
 create index on public.device_tokens (user_id);
 
+-- Secretos server-only (ej: cuenta de servicio de Firebase para FCM).
+-- Sin policies de RLS: solo el service_role (que bypassea RLS) puede
+-- leerla o escribirla. La usa la Edge Function send-push.
+create table public.app_secrets (
+  id text primary key,
+  value jsonb not null,
+  updated_at timestamptz not null default now()
+);
+alter table public.app_secrets enable row level security;
+
 -- ---------------------------------------------------------------------
 -- Lógica de negocio
 -- ---------------------------------------------------------------------
@@ -584,3 +594,33 @@ create policy notif_update on public.notifications for update
   using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy tokens_all on public.device_tokens for all
   using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+-- ---------------------------------------------------------------------
+-- Cron: recordatorios + push (requiere pg_cron y pg_net)
+-- NOTA: no pegar la service_role key real acá — este archivo se commitea.
+-- La migración real aplicada al proyecto tiene la key embebida en el
+-- job de pg_cron (vive en Postgres, nunca en git).
+-- ---------------------------------------------------------------------
+create extension if not exists pg_cron;
+create extension if not exists pg_net;
+
+select cron.schedule(
+  'enqueue-reminders',
+  '*/15 * * * *',
+  $$select public.enqueue_reminders();$$
+);
+
+select cron.schedule(
+  'send-push-notifications',
+  '*/5 * * * *',
+  $$
+  select net.http_post(
+    url := 'https://tostjnvhhekxybwsdawk.supabase.co/functions/v1/send-push',
+    headers := jsonb_build_object(
+      'Authorization', 'Bearer <SUPABASE_SERVICE_ROLE_KEY>',
+      'Content-Type', 'application/json'
+    ),
+    body := '{}'::jsonb
+  );
+  $$
+);
