@@ -12,9 +12,9 @@ import { signIn } from "./actions";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; next?: string }>;
+  searchParams: Promise<{ error?: string; next?: string; eliminada?: string }>;
 }) {
-  const { error, next } = await searchParams;
+  const { error, next, eliminada } = await searchParams;
 
   return (
     <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-4 py-10">
@@ -30,6 +30,11 @@ export default async function LoginPage({
             <CardDescription>Iniciá sesión para reservar tu cancha</CardDescription>
           </CardHeader>
           <CardContent>
+            {eliminada && !error && (
+              <Alert className="mb-4">
+                <AlertDescription>Tu cuenta fue eliminada.</AlertDescription>
+              </Alert>
+            )}
             {error && (
               <Alert variant="destructive" className="mb-4">
                 <AlertDescription>{error}</AlertDescription>

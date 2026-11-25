@@ -86,6 +86,13 @@ export default async function RegisterPage({
                 Iniciá sesión
               </Link>
             </p>
+            <p className="mt-2 text-center text-xs text-muted-foreground">
+              Al crear tu cuenta aceptás nuestra{" "}
+              <Link href="/legal/privacidad" className="underline underline-offset-4">
+                Política de Privacidad
+              </Link>
+              .
+            </p>
           </CardContent>
         </Card>
       </div>

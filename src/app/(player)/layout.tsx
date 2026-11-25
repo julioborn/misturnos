@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShieldCheck, LayoutDashboard } from "lucide-react";
+import { ShieldCheck, LayoutDashboard, UserCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
 import { PlayerTopNav, PlayerBottomNav } from "@/components/player/player-nav";
@@ -54,6 +54,10 @@ export default async function PlayerLayout({ children }: { children: React.React
               <span className="hidden sm:inline">Panel</span>
             </Button>
           )}
+          <Button variant="ghost" size="sm" render={<Link href="/cuenta" />}>
+            <UserCircle className="size-4" />
+            <span className="hidden sm:inline">Cuenta</span>
+          </Button>
           <form action={signOut}>
             <Button variant="ghost" size="sm">
               Salir
