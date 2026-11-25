@@ -5,7 +5,10 @@ import { registerDeviceTokenAction } from "@/app/(player)/actions";
 
 // No hace nada en el navegador normal — solo cuando la app corre adentro
 // del WebView de Capacitor (la futura app de Android/iOS). Pide permiso
-// de notificaciones, registra el dispositivo en FCM y guarda el token.
+// de notificaciones y registra el token de FCM (en los dos sistemas:
+// @capacitor-firebase/messaging usa el SDK nativo de Firebase tanto en
+// Android como en iOS, así que siempre devuelve un token de FCM, nunca
+// un token crudo de APNs).
 export function PushRegistration() {
   useEffect(() => {
     let cancelled = false;
@@ -14,23 +17,23 @@ export function PushRegistration() {
       const { Capacitor } = await import("@capacitor/core");
       if (!Capacitor.isNativePlatform()) return;
 
-      const { PushNotifications } = await import("@capacitor/push-notifications");
+      const { FirebaseMessaging } = await import("@capacitor-firebase/messaging");
       const platform = Capacitor.getPlatform() as "android" | "ios";
 
-      const permission = await PushNotifications.checkPermissions();
+      const permission = await FirebaseMessaging.checkPermissions();
       let status = permission.receive;
       if (status === "prompt" || status === "prompt-with-rationale") {
-        status = (await PushNotifications.requestPermissions()).receive;
+        status = (await FirebaseMessaging.requestPermissions()).receive;
       }
       if (status !== "granted" || cancelled) return;
 
-      await PushNotifications.register();
+      const { token } = await FirebaseMessaging.getToken();
+      if (!cancelled) {
+        registerDeviceTokenAction(token, platform);
+      }
 
-      PushNotifications.addListener("registration", (token) => {
-        registerDeviceTokenAction(token.value, platform);
-      });
-      PushNotifications.addListener("registrationError", (err) => {
-        console.error("Error registrando push:", err);
+      FirebaseMessaging.addListener("tokenReceived", (event) => {
+        registerDeviceTokenAction(event.token, platform);
       });
     }
 
