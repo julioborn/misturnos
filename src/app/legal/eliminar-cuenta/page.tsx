@@ -7,9 +7,16 @@ export const metadata = {
 export default function EliminarCuentaPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-bold">Eliminar cuenta y datos</h1>
+      <h1 className="text-2xl font-bold">Eliminar cuenta y datos — Mis Turnos Deportivos</h1>
 
       <div className="mt-8 flex flex-col gap-6 text-sm leading-relaxed text-foreground">
+        <section>
+          <p>
+            Esta página explica cómo eliminar tu cuenta y tus datos personales de la app{" "}
+            <strong>Mis Turnos Deportivos</strong>.
+          </p>
+        </section>
+
         <section>
           <h2 className="text-base font-semibold">Desde la app</h2>
           <p className="mt-2">
