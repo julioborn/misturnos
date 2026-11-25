@@ -20,7 +20,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/80 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/60">
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b bg-background/80 px-4 py-3 [html[data-platform='ios']_&]:pt-[calc(0.75rem+env(safe-area-inset-top))] backdrop-blur supports-backdrop-filter:bg-background/60">
         <Link href="/admin" className="flex flex-col leading-tight">
           <span className="text-sm font-bold tracking-tight">Mis Turnos</span>
           <span className="text-xs text-muted-foreground">Admin</span>

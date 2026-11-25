@@ -34,9 +34,9 @@ export default async function PlayerLayout({ children }: { children: React.React
         .maybeSingle();
 
   return (
-    <div className="flex min-h-full flex-1 flex-col pb-16 sm:pb-0">
+    <div className="flex min-h-full flex-1 flex-col pb-16 [html[data-platform='ios']_&]:pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PushRegistration />
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b bg-background/80 px-4 py-3 backdrop-blur supports-backdrop-filter:bg-background/60 sm:px-6">
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b bg-background/80 px-4 py-3 [html[data-platform='ios']_&]:pt-[calc(0.75rem+env(safe-area-inset-top))] backdrop-blur supports-backdrop-filter:bg-background/60 sm:px-6">
         <Link href="/" className="text-base font-bold tracking-tight">
           Mis Turnos
         </Link>
