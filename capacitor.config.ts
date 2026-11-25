@@ -11,7 +11,7 @@ const config: CapacitorConfig = {
   appName: 'Mis Turnos Deportivos',
   webDir: 'public',
   server: {
-    url: 'https://misturnos-topaz.vercel.app',
+    url: 'https://misturnosdeportivos.vercel.app',
     cleartext: false,
   },
 };
