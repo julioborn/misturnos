@@ -24,7 +24,7 @@ export function PlayerBottomNav({ unreadCount }: { unreadCount: number }) {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60 sm:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t bg-background/80 [html[data-platform='ios']_&]:pb-[env(safe-area-inset-bottom)] backdrop-blur supports-backdrop-filter:bg-background/60 sm:hidden">
       {ITEMS.map((item) => {
         const active = isActive(pathname, item.href);
         const Icon = item.icon;

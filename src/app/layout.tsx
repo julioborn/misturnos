@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { PlatformFlag } from "@/components/platform-flag";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,6 +30,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   themeColor: "#ffffff",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -38,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <PlatformFlag />
         <ThemeProvider>
           {children}
           <Toaster position="top-center" />
