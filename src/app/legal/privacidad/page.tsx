@@ -80,7 +80,17 @@ export default function PrivacidadPage() {
         </section>
 
         <section>
-          <h2 className="text-base font-semibold">7. Cambios a esta política</h2>
+          <h2 className="text-base font-semibold">7. Usuarios adolescentes</h2>
+          <p className="mt-2">
+            Mis Turnos está pensada para usuarios de 13 años en adelante. Si sos menor de 18 años,
+            te recomendamos usar la app con el conocimiento de tu padre, madre o tutor,
+            especialmente si participás de torneos organizados por un establecimiento. No
+            mostramos publicidad ni usamos tus datos con fines publicitarios.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-base font-semibold">8. Cambios a esta política</h2>
           <p className="mt-2">
             Si cambiamos esta política de forma relevante, lo vamos a avisar dentro de la app.
           </p>
