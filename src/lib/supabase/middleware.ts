@@ -3,9 +3,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/supabase/database.types";
 
 const PUBLIC_PATHS = ["/login", "/register", "/auth/callback"];
+// Accesibles para cualquiera, estés logueado o no (no se redirigen nunca).
+const ALWAYS_ACCESSIBLE_PATHS = ["/legal"];
+
+function matchesPath(pathname: string, paths: string[]) {
+  return paths.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
 
 function isPublicPath(pathname: string) {
-  return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  return matchesPath(pathname, PUBLIC_PATHS);
 }
 
 // Se ejecuta en cada request: refresca la sesión y decide a dónde
@@ -34,6 +40,8 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
+
+  if (matchesPath(pathname, ALWAYS_ACCESSIBLE_PATHS)) return response;
 
   if (!user) {
     if (isPublicPath(pathname)) return response;
