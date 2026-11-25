@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "520840648749",
+    "project_id": "misturnos-1050f",
+    "storage_bucket": "misturnos-1050f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520840648749:android:3a2ad62fbc40a8d8abc0a4",
+        "android_client_info": {
+          "package_name": "com.misturnos.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqvAPd0MSAC7MsOMXSnZSM48nHul64Nbk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
