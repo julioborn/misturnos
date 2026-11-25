@@ -8,7 +8,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 // remota.
 const config: CapacitorConfig = {
   appId: 'com.misturnos.app',
-  appName: 'Mis Turnos',
+  appName: 'Mis Turnos Deportivos',
   webDir: 'public',
   server: {
     url: 'https://misturnos-topaz.vercel.app',
