@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { updateEstablishment, toggleActive } from "../actions";
+import { updateEstablishment, toggleActive, uploadEstablishmentPhotoAdmin } from "../actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,7 +22,7 @@ export default async function EditEstablishmentPage({
   const supabase = await createClient();
   const { data: establishment } = await supabase
     .from("establishments")
-    .select("id,name,slug,description,address,phone,cancel_hours_before,active")
+    .select("id,name,slug,description,address,phone,cancel_hours_before,active,photos")
     .eq("id", id)
     .single();
 
@@ -30,6 +30,7 @@ export default async function EditEstablishmentPage({
 
   const updateWithId = updateEstablishment.bind(null, establishment.id);
   const toggleWithId = toggleActive.bind(null, establishment.id, !establishment.active);
+  const uploadPhotoWithId = uploadEstablishmentPhotoAdmin.bind(null, establishment.id);
 
   return (
     <div className="mx-auto flex max-w-md flex-col gap-4">
@@ -56,6 +57,29 @@ export default async function EditEstablishmentPage({
           {establishment.active ? "Suspender establecimiento" : "Activar establecimiento"}
         </Button>
       </form>
+
+      <Card>
+        <CardContent className="flex flex-col gap-2">
+          <Label>Foto principal</Label>
+          <p className="text-xs text-muted-foreground">
+            Es la foto que ven los jugadores en la lista de establecimientos. JPG, PNG o WEBP, hasta 5 MB.
+          </p>
+          {establishment.photos?.[0] && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={establishment.photos[0]}
+              alt="Foto principal del establecimiento"
+              className="h-32 w-full rounded-lg object-cover sm:w-48"
+            />
+          )}
+          <form action={uploadPhotoWithId} className="flex items-center gap-2">
+            <Input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required />
+            <Button type="submit" variant="outline">
+              Subir
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardContent>

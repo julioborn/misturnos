@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { uploadEstablishmentPhotoFile } from "@/lib/storage/establishment-photo";
 
 async function requireSuperAdmin() {
   const supabase = await createClient();
@@ -131,6 +132,19 @@ export async function updateEstablishment(establishmentId: string, formData: For
 
   revalidatePath("/admin");
   revalidatePath(`/admin/${establishmentId}`);
+  redirect(`/admin/${establishmentId}?ok=1`);
+}
+
+export async function uploadEstablishmentPhotoAdmin(establishmentId: string, formData: FormData) {
+  await requireSuperAdmin();
+
+  const { error } = await uploadEstablishmentPhotoFile(establishmentId, formData);
+  if (error) {
+    redirect(`/admin/${establishmentId}?error=${encodeURIComponent(error)}`);
+  }
+
+  revalidatePath(`/admin/${establishmentId}`);
+  revalidatePath("/");
   redirect(`/admin/${establishmentId}?ok=1`);
 }
 
