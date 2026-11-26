@@ -19,11 +19,33 @@ async function requireSuperAdmin() {
   return supabase;
 }
 
+function slugify(input: string) {
+  return input
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+async function uniqueSlug(supabase: Awaited<ReturnType<typeof createClient>>, base: string) {
+  const { data } = await supabase
+    .from("establishments")
+    .select("slug")
+    .or(`slug.eq.${base},slug.like.${base}-%`);
+
+  const existing = new Set((data ?? []).map((e) => e.slug));
+  if (!existing.has(base)) return base;
+
+  let n = 2;
+  while (existing.has(`${base}-${n}`)) n++;
+  return `${base}-${n}`;
+}
+
 export async function createEstablishment(formData: FormData) {
   await requireSuperAdmin();
 
   const name = String(formData.get("name") ?? "").trim();
-  const slug = String(formData.get("slug") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim() || null;
   const phone = String(formData.get("phone") ?? "").trim() || null;
   const cancelHoursBefore = Number(formData.get("cancel_hours_before") ?? 4);
@@ -34,7 +56,7 @@ export async function createEstablishment(formData: FormData) {
   const ownerEmail = String(formData.get("owner_email") ?? "").trim();
   const ownerPassword = String(formData.get("owner_password") ?? "");
 
-  if (!name || !slug || !ownerFullName || !ownerDni || !ownerEmail || !ownerPassword) {
+  if (!name || !ownerFullName || !ownerDni || !ownerEmail || !ownerPassword) {
     redirect(`/admin/nuevo?error=${encodeURIComponent("Completá todos los campos obligatorios")}`);
   }
   if (!/^\d{7,8}$/.test(ownerDni)) {
@@ -43,6 +65,7 @@ export async function createEstablishment(formData: FormData) {
 
   const adminClient = createAdminClient();
   const supabase = await createClient();
+  const slug = await uniqueSlug(supabase, slugify(name));
 
   const { data: created, error: createUserError } = await adminClient.auth.admin.createUser({
     email: ownerEmail,
@@ -92,7 +115,6 @@ export async function updateEstablishment(establishmentId: string, formData: For
   const supabase = await requireSuperAdmin();
 
   const name = String(formData.get("name") ?? "").trim();
-  const slug = String(formData.get("slug") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim() || null;
   const address = String(formData.get("address") ?? "").trim() || null;
   const phone = String(formData.get("phone") ?? "").trim() || null;
@@ -100,7 +122,7 @@ export async function updateEstablishment(establishmentId: string, formData: For
 
   const { error } = await supabase
     .from("establishments")
-    .update({ name, slug, description, address, phone, cancel_hours_before: cancelHoursBefore })
+    .update({ name, description, address, phone, cancel_hours_before: cancelHoursBefore })
     .eq("id", establishmentId);
 
   if (error) {
