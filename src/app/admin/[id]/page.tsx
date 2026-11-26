@@ -65,8 +65,12 @@ export default async function EditEstablishmentPage({
               <Input id="name" name="name" defaultValue={establishment.name} required />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="slug">Slug</Label>
+              <Label htmlFor="slug">Identificador de URL</Label>
               <Input id="slug" name="slug" defaultValue={establishment.slug} required pattern="[a-z0-9-]+" />
+              <p className="text-xs text-muted-foreground">
+                Así queda la dirección del establecimiento: misturnosdeportivos.vercel.app/establecimientos/<strong>{establishment.slug}</strong>.
+                Solo minúsculas, números y guiones, sin espacios ni tildes.
+              </p>
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="description">Descripción</Label>

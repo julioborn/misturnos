@@ -34,7 +34,7 @@ export default async function NuevoEstablecimientoPage({
               <Input id="name" name="name" placeholder="Padel Club Río" required />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="slug">Slug</Label>
+              <Label htmlFor="slug">Identificador de URL</Label>
               <Input
                 id="slug"
                 name="slug"
@@ -43,6 +43,10 @@ export default async function NuevoEstablecimientoPage({
                 pattern="[a-z0-9-]+"
                 title="Solo minúsculas, números y guiones"
               />
+              <p className="text-xs text-muted-foreground">
+                Así queda la dirección del establecimiento: misturnosdeportivos.vercel.app/establecimientos/<strong>padel-club-rio</strong>.
+                Solo minúsculas, números y guiones, sin espacios ni tildes.
+              </p>
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="address">Dirección (opcional)</Label>
