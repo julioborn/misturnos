@@ -97,7 +97,7 @@ export function BookingSlots({
               disabled={!slot.isFree}
               onClick={() => handleSelect(slot)}
               className={cn(
-                "flex min-h-[64px] touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl border px-2 py-3 text-center transition-all duration-100 ease-out",
+                "flex min-h-[56px] touch-manipulation items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all duration-100 ease-out",
                 isSelected
                   ? "border-[#111111] bg-[#111111] text-white active:scale-[0.97]"
                   : slot.isFree
@@ -105,18 +105,10 @@ export function BookingSlots({
                     : "border-transparent bg-[#F2F2F7] text-[#9a9a9e]",
               )}
             >
-              <span className="flex items-center gap-1 text-[16px] font-semibold [font-variant-numeric:tabular-nums]">
-                {slot.startTime} – {slot.endTime}
-                {isSelected && <Check className="size-4 shrink-0" />}
+              <span className="text-[16px] font-semibold [font-variant-numeric:tabular-nums]">
+                {slot.startTime}
               </span>
-              <span
-                className={cn(
-                  "text-[13px] [font-variant-numeric:tabular-nums]",
-                  isSelected ? "text-white/80" : slot.isFree ? "text-[#636366]" : "text-[#9a9a9e]",
-                )}
-              >
-                ${slot.price} · {slot.isFree ? "Disponible" : "Ocupado"}
-              </span>
+              {isSelected && <Check className="size-4 shrink-0" />}
             </button>
           );
         })}
@@ -140,16 +132,15 @@ export function BookingSlots({
             <div className="flex min-w-0 items-center gap-2">
               <CalendarIcon className="size-4 shrink-0 text-[#636366]" />
               <div className="flex min-w-0 flex-col">
-                <span className="text-[14px] font-semibold text-[#111111]">Tu reserva</span>
+                <span className="text-[14px] font-semibold text-[#111111]">{courtName}</span>
                 <span className="truncate text-[13px] text-[#636366]">
-                  {dateLabel} · {selected.startTime} hs
+                  {dateLabel} · {selected.startTime} – {selected.endTime} hs
                 </span>
               </div>
             </div>
-            <div className="flex shrink-0 flex-col items-end text-right">
-              <span className="text-[14px] font-semibold text-[#111111]">{courtName}</span>
-              <span className="text-[13px] text-[#636366]">{sportBadge}</span>
-            </div>
+            <span className="shrink-0 text-[16px] font-semibold text-[#111111] [font-variant-numeric:tabular-nums]">
+              ${selected.price}
+            </span>
           </div>
 
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
