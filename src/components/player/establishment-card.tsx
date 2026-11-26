@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { MapPin, ChevronRight } from "lucide-react";
-
-const SPORT_LABEL: Record<string, string> = {
-  padel: "Pádel",
-  futbol: "Fútbol",
-  basquet: "Básquet",
-  voley: "Vóley",
-};
+import { sportLabel } from "@/lib/sports";
 
 export type EstablishmentListItem = {
   id: string;
@@ -18,7 +12,7 @@ export type EstablishmentListItem = {
 };
 
 export function EstablishmentCard({ establishment }: { establishment: EstablishmentListItem }) {
-  const sportsLabel = establishment.sports.map((s) => SPORT_LABEL[s] ?? s).join(" · ");
+  const sportsLabel = establishment.sports.map((s) => sportLabel(s)).join(" · ");
 
   return (
     <Link

@@ -1,14 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { SPORT_META } from "@/lib/sports";
 
 export const SPORTS = [
-  { key: "all", label: "Todo", emoji: "▦" },
-  { key: "padel", label: "Pádel", emoji: "🎾" },
-  { key: "futbol", label: "Fútbol", emoji: "⚽" },
-  { key: "basquet", label: "Básquet", emoji: "🏀" },
-  { key: "voley", label: "Vóley", emoji: "🏐" },
-] as const;
+  { key: "all" as const, label: "Todo", emoji: "▦" },
+  { key: "padel" as const, ...SPORT_META.padel },
+  { key: "futbol" as const, ...SPORT_META.futbol },
+  { key: "basquet" as const, ...SPORT_META.basquet },
+  { key: "voley" as const, ...SPORT_META.voley },
+];
 
 export type SportKey = (typeof SPORTS)[number]["key"];
 
