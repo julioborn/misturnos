@@ -36,10 +36,7 @@ export default async function EditEstablishmentPage({
     <div className="mx-auto flex max-w-md flex-col gap-4">
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold">{establishment.name}</h2>
-        <Badge
-          variant={establishment.active ? "default" : "destructive"}
-          className={establishment.active ? "bg-green-600/10 text-green-600 dark:bg-green-600/20" : undefined}
-        >
+        <Badge variant={establishment.active ? "default" : "secondary"}>
           {establishment.active ? "Activo" : "Suspendido"}
         </Badge>
       </div>
