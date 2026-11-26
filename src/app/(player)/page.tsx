@@ -25,7 +25,7 @@ export default async function HomePage() {
       name: e.name,
       slug: e.slug,
       address: e.address,
-      image: e.photos?.[0] ?? e.logo_url ?? null,
+      image: e.logo_url ?? e.photos?.[0] ?? null,
       sports,
     };
   });

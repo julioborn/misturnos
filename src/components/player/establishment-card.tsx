@@ -19,13 +19,13 @@ export function EstablishmentCard({ establishment }: { establishment: Establishm
       href={`/establecimientos/${establishment.slug}`}
       className="flex touch-manipulation flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-transform duration-100 ease-out active:scale-[0.98] active:bg-[#F2F2F7]"
     >
-      <div className="aspect-[4/3] w-full bg-[#E5E5EA]">
+      <div className="aspect-square w-full bg-[#E5E5EA]">
         {establishment.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={establishment.image}
             alt={establishment.name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
           />
         ) : null}
       </div>
