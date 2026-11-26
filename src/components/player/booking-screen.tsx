@@ -44,11 +44,15 @@ export function BookingScreen({
     });
   }
 
-  const { days, monthYearLabel, dateLabel } = useMemo(() => {
-    // Siempre la semana actual (lunes a domingo), no la de la fecha elegida.
-    const todayMondayOffset = (weekdayOfLocalDate(today) + 6) % 7;
-    const weekStart = addDaysLocal(today, -todayMondayOffset);
+  const { days, monthYearLabel, canGoPrevWeek, dateLabel } = useMemo(() => {
+    // Semana (lunes a domingo) que contiene la fecha elegida — siempre una
+    // fila completa de lunes a domingo, nunca una ventana corrida de 7 días.
+    const mondayOffset = (weekdayOfLocalDate(date) + 6) % 7;
+    const weekStart = addDaysLocal(date, -mondayOffset);
     const weekDates = Array.from({ length: 7 }, (_, i) => addDaysLocal(weekStart, i));
+
+    const todayMondayOffset = (weekdayOfLocalDate(today) + 6) % 7;
+    const todayWeekStart = addDaysLocal(today, -todayMondayOffset);
 
     const days: WeekDay[] = weekDates.map((d) => ({
       date: d,
@@ -60,7 +64,8 @@ export function BookingScreen({
 
     return {
       days,
-      monthYearLabel: format(new Date(`${today}T00:00:00`), "MMMM yyyy", { locale: es }),
+      monthYearLabel: format(new Date(`${date}T00:00:00`), "MMMM yyyy", { locale: es }),
+      canGoPrevWeek: weekStart > todayWeekStart,
       dateLabel: capitalize(format(new Date(`${date}T00:00:00`), "EEEE d 'de' MMMM", { locale: es })),
     };
   }, [date, today]);
@@ -97,7 +102,10 @@ export function BookingScreen({
         date={date}
         monthYearLabel={monthYearLabel}
         days={days}
+        canGoPrevWeek={canGoPrevWeek}
         onSelectDate={(d) => reload(courtId, d)}
+        onPrevWeek={() => reload(courtId, addDaysLocal(date, -7))}
+        onNextWeek={() => reload(courtId, addDaysLocal(date, 7))}
       />
 
       <BookingSlots
