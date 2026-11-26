@@ -72,30 +72,31 @@ export function BookingScreen({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-end">
-          <span className="inline-flex items-center gap-1 rounded-full bg-[#F2F2F7] px-2.5 py-1 text-[13px] font-medium text-[#111111]">
-            {sportEmoji(court.sport)} {sportLabel(court.sport)}
-          </span>
-        </div>
-        <div className="flex gap-2 overflow-x-auto">
-          {courts.map((c) => (
+      <div className="flex justify-center gap-2 overflow-x-auto">
+        {courts.map((c) => {
+          const isSelected = c.id === courtId;
+          return (
             <button
               key={c.id}
               type="button"
               onClick={() => reload(c.id, date)}
               className={cn(
-                "flex h-12 shrink-0 touch-manipulation items-center justify-center rounded-xl px-4 text-[15px] font-semibold transition-all duration-100 ease-out active:scale-95",
-                c.id === courtId
+                "flex h-14 shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl px-4 transition-all duration-100 ease-out active:scale-95",
+                isSelected
                   ? "bg-[#111111] text-white"
                   : "bg-[#F2F2F7] text-[#111111] active:bg-[#E5E5EA]",
               )}
             >
-              {c.name}
-              {c.variant ? ` (${c.variant})` : ""}
+              <span className="text-[15px] font-semibold">
+                {c.name}
+                {c.variant ? ` (${c.variant})` : ""}
+              </span>
+              <span className={cn("text-[11px]", isSelected ? "text-white/70" : "text-[#636366]")}>
+                {sportEmoji(c.sport)} {sportLabel(c.sport)}
+              </span>
             </button>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
       <WeekStrip
