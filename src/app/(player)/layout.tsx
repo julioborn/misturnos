@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
 import { PlayerTopNav, PlayerBottomNav } from "@/components/player/player-nav";
 import { PushRegistration } from "@/components/player/push-registration";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import { Button } from "@/components/ui/button";
 
 export default async function PlayerLayout({ children }: { children: React.ReactNode }) {
@@ -56,7 +57,9 @@ export default async function PlayerLayout({ children }: { children: React.React
         </div>
       </header>
 
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        <PullToRefresh>{children}</PullToRefresh>
+      </main>
 
       <PlayerBottomNav />
     </div>
