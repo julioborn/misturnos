@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Check, Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -43,12 +42,9 @@ export function BookingSlots({
   isLoading?: boolean;
 }) {
   const [selected, setSelected] = useState<BookingSlot | null>(null);
-  const [onlyAvailable, setOnlyAvailable] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-
-  const visibleSlots = onlyAvailable ? slots.filter((s) => s.isFree) : slots;
 
   function handleSelect(slot: BookingSlot) {
     if (!slot.isFree) return;
@@ -72,14 +68,6 @@ export function BookingSlots({
 
   return (
     <div className="flex flex-col gap-3 pb-28">
-      <div className="flex items-center justify-between">
-        <span className="text-[13px] font-semibold tracking-wide text-[#636366] uppercase">Horarios</span>
-        <label className="flex touch-manipulation items-center gap-2 text-[13px] text-[#636366]">
-          Solo disponibles
-          <Switch checked={onlyAvailable} onCheckedChange={setOnlyAvailable} />
-        </label>
-      </div>
-
       {isLoading ? (
         <div className="grid grid-cols-2 gap-2">
           {Array.from({ length: 8 }, (_, i) => (
@@ -88,7 +76,7 @@ export function BookingSlots({
         </div>
       ) : (
       <div className="grid grid-cols-2 gap-2">
-        {visibleSlots.map((slot) => {
+        {slots.map((slot) => {
           const isSelected = selected?.startsAt === slot.startsAt;
           return (
             <button
@@ -118,11 +106,6 @@ export function BookingSlots({
       {!isLoading && slots.length === 0 && (
         <p className="py-10 text-center text-[14px] text-[#636366]">
           No hay horarios cargados para este día.
-        </p>
-      )}
-      {!isLoading && slots.length > 0 && visibleSlots.length === 0 && (
-        <p className="py-10 text-center text-[14px] text-[#636366]">
-          No hay horarios disponibles para este día.
         </p>
       )}
 

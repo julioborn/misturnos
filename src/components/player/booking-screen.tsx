@@ -44,13 +44,11 @@ export function BookingScreen({
     });
   }
 
-  const { days, monthYearLabel, canGoPrevWeek, dateLabel } = useMemo(() => {
-    const mondayOffset = (weekdayOfLocalDate(date) + 6) % 7;
-    const weekStart = addDaysLocal(date, -mondayOffset);
-    const weekDates = Array.from({ length: 7 }, (_, i) => addDaysLocal(weekStart, i));
-
+  const { days, monthYearLabel, dateLabel } = useMemo(() => {
+    // Siempre la semana actual (lunes a domingo), no la de la fecha elegida.
     const todayMondayOffset = (weekdayOfLocalDate(today) + 6) % 7;
-    const todayWeekStart = addDaysLocal(today, -todayMondayOffset);
+    const weekStart = addDaysLocal(today, -todayMondayOffset);
+    const weekDates = Array.from({ length: 7 }, (_, i) => addDaysLocal(weekStart, i));
 
     const days: WeekDay[] = weekDates.map((d) => ({
       date: d,
@@ -62,8 +60,7 @@ export function BookingScreen({
 
     return {
       days,
-      monthYearLabel: format(new Date(`${date}T00:00:00`), "MMMM yyyy", { locale: es }),
-      canGoPrevWeek: weekStart > todayWeekStart,
+      monthYearLabel: format(new Date(`${today}T00:00:00`), "MMMM yyyy", { locale: es }),
       dateLabel: capitalize(format(new Date(`${date}T00:00:00`), "EEEE d 'de' MMMM", { locale: es })),
     };
   }, [date, today]);
@@ -71,8 +68,7 @@ export function BookingScreen({
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <span className="text-[13px] font-semibold tracking-wide text-[#636366] uppercase">Cancha</span>
+        <div className="flex justify-end">
           <span className="inline-flex items-center gap-1 rounded-full bg-[#F2F2F7] px-2.5 py-1 text-[13px] font-medium text-[#111111]">
             {sportEmoji(court.sport)} {sportLabel(court.sport)}
           </span>
@@ -101,10 +97,7 @@ export function BookingScreen({
         date={date}
         monthYearLabel={monthYearLabel}
         days={days}
-        canGoPrevWeek={canGoPrevWeek}
         onSelectDate={(d) => reload(courtId, d)}
-        onPrevWeek={() => reload(courtId, addDaysLocal(date, -7))}
-        onNextWeek={() => reload(courtId, addDaysLocal(date, 7))}
       />
 
       <BookingSlots
