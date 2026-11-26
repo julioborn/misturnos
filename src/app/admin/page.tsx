@@ -74,7 +74,10 @@ export default async function AdminEstablishmentsPage() {
                 <ChevronRight className="ml-auto size-4 text-muted-foreground" />
               </Link>
               <div className="flex items-center gap-2">
-                <Badge variant={est.active ? "default" : "secondary"}>
+                <Badge
+                  variant={est.active ? "default" : "destructive"}
+                  className={est.active ? "bg-green-600/10 text-green-600 dark:bg-green-600/20" : undefined}
+                >
                   {est.active ? "Activo" : "Suspendido"}
                 </Badge>
                 <form action={toggle}>
