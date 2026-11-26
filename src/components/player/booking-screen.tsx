@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { todayLocal, addDaysLocal, weekdayOfLocalDate } from "@/lib/time/argentina";
-import { sportLabel, sportEmoji } from "@/lib/sports";
+import { SPORT_META, sportLabel, sportEmoji } from "@/lib/sports";
 import { WeekStrip, type WeekDay } from "@/components/player/week-strip";
 import { BookingSlots, type BookingSlot } from "@/components/player/booking-slots";
 import { getAvailabilityAction } from "@/app/(player)/actions";
@@ -33,7 +33,11 @@ export function BookingScreen({
   const [isPending, startTransition] = useTransition();
 
   const court = courts.find((c) => c.id === courtId)!;
+  const [selectedSport, setSelectedSport] = useState(court.sport);
   const today = todayLocal();
+
+  const sports = Object.keys(SPORT_META).filter((key) => courts.some((c) => c.sport === key));
+  const visibleCourts = sports.length > 1 ? courts.filter((c) => c.sport === selectedSport) : courts;
 
   function reload(nextCourtId: string, nextDate: string) {
     setCourtId(nextCourtId);
@@ -42,6 +46,12 @@ export function BookingScreen({
       const { slots: next } = await getAvailabilityAction(nextCourtId, nextDate);
       setSlots(next);
     });
+  }
+
+  function selectSport(sport: string) {
+    setSelectedSport(sport);
+    const firstCourt = courts.find((c) => c.sport === sport);
+    if (firstCourt) reload(firstCourt.id, date);
   }
 
   const { days, monthYearLabel, canGoPrevWeek, dateLabel } = useMemo(() => {
@@ -72,8 +82,32 @@ export function BookingScreen({
 
   return (
     <div className="flex flex-col gap-5">
+      {sports.length > 1 && (
+        <div className="flex justify-center gap-2">
+          {sports.map((s) => {
+            const isSelected = s === selectedSport;
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => selectSport(s)}
+                className={cn(
+                  "flex h-14 w-20 shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl transition-all duration-100 ease-out active:scale-95",
+                  isSelected
+                    ? "bg-[#111111] text-white"
+                    : "bg-[#F2F2F7] text-[#111111] active:bg-[#E5E5EA]",
+                )}
+              >
+                <span className="text-[24px] leading-none">{sportEmoji(s)}</span>
+                <span className="text-[11px] font-medium leading-none">{sportLabel(s)}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       <div className="flex justify-center gap-2 overflow-x-auto">
-        {courts.map((c) => {
+        {visibleCourts.map((c) => {
           const isSelected = c.id === courtId;
           return (
             <button
@@ -91,9 +125,11 @@ export function BookingScreen({
                 {c.name}
                 {c.variant ? ` (${c.variant})` : ""}
               </span>
-              <span className={cn("text-[11px]", isSelected ? "text-white/70" : "text-[#636366]")}>
-                {sportEmoji(c.sport)} {sportLabel(c.sport)}
-              </span>
+              {sports.length <= 1 && (
+                <span className={cn("text-[11px]", isSelected ? "text-white/70" : "text-[#636366]")}>
+                  {sportEmoji(c.sport)} {sportLabel(c.sport)}
+                </span>
+              )}
             </button>
           );
         })}
