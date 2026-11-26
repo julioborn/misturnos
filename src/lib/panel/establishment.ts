@@ -10,7 +10,7 @@ export async function getMemberships() {
 
   const { data } = await supabase
     .from("establishment_members")
-    .select("establishment_id, role, establishments(id,name,slug,timezone,cancel_hours_before,active,address,phone,description)")
+    .select("establishment_id, role, establishments(id,name,slug,timezone,cancel_hours_before,active,address,phone,description,photos)")
     .eq("user_id", user.id);
 
   return { user, memberships: data ?? [] };

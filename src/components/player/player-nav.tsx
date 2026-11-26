@@ -23,7 +23,7 @@ export function PlayerBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t bg-background/80 [html[data-platform='ios']_&]:pb-[env(safe-area-inset-bottom)] backdrop-blur supports-backdrop-filter:bg-background/60 sm:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-[#E5E5EA] bg-[#F2F2F7]/80 [html[data-platform='ios']_&]:pb-[env(safe-area-inset-bottom)] backdrop-blur supports-backdrop-filter:bg-[#F2F2F7]/60 sm:hidden">
       {ITEMS.map((item) => {
         const active = isActive(pathname, item.href);
         const Icon = item.icon;
@@ -32,8 +32,8 @@ export function PlayerBottomNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              "relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium",
-              active ? "text-primary" : "text-muted-foreground",
+              "relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition-colors duration-100 active:opacity-60",
+              active ? "text-[#111111]" : "text-[#636366]",
             )}
           >
             <Icon className="size-5" />

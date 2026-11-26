@@ -29,8 +29,8 @@ export function SportFilter({
             type="button"
             onClick={() => onSelect(sport.key)}
             className={cn(
-              "flex flex-col items-center justify-center gap-1 rounded-2xl py-2.5 transition-colors",
-              active ? "bg-[#111111] text-white" : "bg-white text-[#111111]",
+              "flex touch-manipulation flex-col items-center justify-center gap-1 rounded-2xl py-2.5 transition-all duration-100 ease-out active:scale-95",
+              active ? "bg-[#111111] text-white" : "bg-white text-[#111111] active:bg-[#E5E5EA]",
             )}
           >
             <span className="text-[26px] leading-none">{sport.emoji}</span>

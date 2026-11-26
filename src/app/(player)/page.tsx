@@ -37,7 +37,7 @@ export default async function HomePage() {
 
   return (
     <div
-      className="mx-auto flex min-h-full w-full max-w-2xl flex-col gap-4 bg-[#F2F2F7] p-4 sm:p-6"
+      className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4 sm:p-6"
       style={{ fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
     >
       <h1 className="text-[18px] font-semibold text-[#111111]">

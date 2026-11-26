@@ -1,5 +1,5 @@
 import { getActiveEstablishment } from "@/lib/panel/establishment";
-import { updateEstablishmentProfile } from "./actions";
+import { updateEstablishmentProfile, uploadEstablishmentPhoto } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,6 +37,29 @@ export default async function ConfiguracionPage({
       )}
 
       <fieldset disabled={!canEdit} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
+          <Label>Foto principal</Label>
+          <p className="text-xs text-muted-foreground">
+            Es la foto que ven los jugadores en la lista de establecimientos. JPG, PNG o WEBP, hasta 5 MB.
+          </p>
+          {establishment.photos?.[0] && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={establishment.photos[0]}
+              alt="Foto principal del establecimiento"
+              className="h-32 w-full rounded-lg object-cover sm:w-48"
+            />
+          )}
+          <form action={uploadEstablishmentPhoto} className="flex items-center gap-2">
+            <Input type="file" name="photo" accept="image/jpeg,image/png,image/webp" required />
+            {canEdit && (
+              <Button type="submit" variant="outline">
+                Subir
+              </Button>
+            )}
+          </form>
+        </div>
+
         <form action={updateEstablishmentProfile} className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="name">Nombre</Label>

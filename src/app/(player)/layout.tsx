@@ -1,23 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShieldCheck, LayoutDashboard, Bell } from "lucide-react";
+import { ShieldCheck, LayoutDashboard } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
 import { PlayerTopNav, PlayerBottomNav } from "@/components/player/player-nav";
 import { PushRegistration } from "@/components/player/push-registration";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 export default async function PlayerLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-
-  const { count } = await supabase
-    .from("notifications")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .is("read_at", null);
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -34,12 +27,10 @@ export default async function PlayerLayout({ children }: { children: React.React
         .limit(1)
         .maybeSingle();
 
-  const unreadCount = count ?? 0;
-
   return (
-    <div className="flex min-h-full flex-1 flex-col pb-16 [html[data-platform='ios']_&]:pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-0">
+    <div className="flex min-h-full flex-1 flex-col bg-[#F2F2F7] pb-16 [html[data-platform='ios']_&]:pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PushRegistration />
-      <header className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b bg-background/80 px-4 py-3 [html[data-platform='ios']_&]:pt-[calc(0.75rem+env(safe-area-inset-top))] backdrop-blur supports-backdrop-filter:bg-background/60 sm:px-6">
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-[#E5E5EA] bg-[#F2F2F7]/80 px-4 py-3 [html[data-platform='ios']_&]:pt-[calc(0.75rem+env(safe-area-inset-top))] backdrop-blur supports-backdrop-filter:bg-[#F2F2F7]/60 sm:px-6">
         <Link href="/" className="text-base font-bold tracking-tight">
           Mis Turnos
         </Link>
@@ -57,16 +48,6 @@ export default async function PlayerLayout({ children }: { children: React.React
               <span className="hidden sm:inline">Panel</span>
             </Button>
           )}
-          <Button variant="ghost" size="icon" render={<Link href="/notificaciones" />}>
-            <span className="relative">
-              <Bell className="size-4" />
-              {unreadCount > 0 && (
-                <Badge className="absolute -right-2 -top-2 h-4 min-w-4 justify-center rounded-full px-1 text-[10px]">
-                  {unreadCount}
-                </Badge>
-              )}
-            </span>
-          </Button>
           <form action={signOut}>
             <Button variant="ghost" size="sm">
               Salir
