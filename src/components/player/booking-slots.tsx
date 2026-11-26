@@ -7,6 +7,7 @@ import { Check, Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sheet,
   SheetContent,
@@ -32,12 +33,14 @@ export function BookingSlots({
   sportBadge,
   dateLabel,
   slots,
+  isLoading = false,
 }: {
   courtId: string;
   courtName: string;
   sportBadge: string;
   dateLabel: string;
   slots: BookingSlot[];
+  isLoading?: boolean;
 }) {
   const [selected, setSelected] = useState<BookingSlot | null>(null);
   const [onlyAvailable, setOnlyAvailable] = useState(false);
@@ -70,13 +73,20 @@ export function BookingSlots({
   return (
     <div className="flex flex-col gap-3 pb-28">
       <div className="flex items-center justify-between">
-        <h2 className="text-[20px] font-semibold text-[#111111]">3. Elegí un horario</h2>
+        <span className="text-[13px] font-semibold tracking-wide text-[#636366] uppercase">Horarios</span>
         <label className="flex touch-manipulation items-center gap-2 text-[13px] text-[#636366]">
           Solo disponibles
           <Switch checked={onlyAvailable} onCheckedChange={setOnlyAvailable} />
         </label>
       </div>
 
+      {isLoading ? (
+        <div className="grid grid-cols-2 gap-2">
+          {Array.from({ length: 8 }, (_, i) => (
+            <Skeleton key={i} className="h-[64px] rounded-xl bg-[#E5E5EA]" />
+          ))}
+        </div>
+      ) : (
       <div className="grid grid-cols-2 gap-2">
         {visibleSlots.map((slot) => {
           const isSelected = selected?.startsAt === slot.startsAt;
@@ -111,13 +121,14 @@ export function BookingSlots({
           );
         })}
       </div>
+      )}
 
-      {slots.length === 0 && (
+      {!isLoading && slots.length === 0 && (
         <p className="py-10 text-center text-[14px] text-[#636366]">
           No hay horarios cargados para este día.
         </p>
       )}
-      {slots.length > 0 && visibleSlots.length === 0 && (
+      {!isLoading && slots.length > 0 && visibleSlots.length === 0 && (
         <p className="py-10 text-center text-[14px] text-[#636366]">
           No hay horarios disponibles para este día.
         </p>

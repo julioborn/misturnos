@@ -2,6 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
+import { fetchAvailability } from "@/lib/booking/availability";
+
+export async function getAvailabilityAction(courtId: string, date: string) {
+  const slots = await fetchAvailability(courtId, date);
+  return { slots };
+}
 
 export async function createBookingAction(courtId: string, startsAt: string) {
   const supabase = await createClient();

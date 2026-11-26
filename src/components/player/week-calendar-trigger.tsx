@@ -1,22 +1,19 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { es } from "date-fns/locale";
 import { ChevronDown } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function WeekCalendarTrigger({
-  courtId,
   date,
   label,
+  onSelect,
 }: {
-  courtId: string;
   date: string;
   label: string;
+  onSelect: (dateKey: string) => void;
 }) {
-  const router = useRouter();
-
   // Ojo: no usar toISOString() acá — es UTC y puede desfasar un día según
   // el huso horario del navegador. Leemos los componentes de fecha en local.
   function dateKeyFromLocalDate(d: Date) {
@@ -47,7 +44,7 @@ export function WeekCalendarTrigger({
           mode="single"
           locale={es}
           selected={new Date(`${date}T00:00:00`)}
-          onSelect={(d) => d && router.push(`?court=${courtId}&date=${dateKeyFromLocalDate(d)}`)}
+          onSelect={(d) => d && onSelect(dateKeyFromLocalDate(d))}
           disabled={{ before: today }}
           autoFocus
         />

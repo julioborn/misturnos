@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WeekCalendarTrigger } from "@/components/player/week-calendar-trigger";
@@ -12,37 +13,38 @@ export type WeekDay = {
 };
 
 export function WeekStrip({
-  courtId,
   date,
   monthYearLabel,
   days,
-  prevWeekDate,
-  nextWeekDate,
   canGoPrevWeek,
+  onSelectDate,
+  onPrevWeek,
+  onNextWeek,
 }: {
-  courtId: string;
   date: string;
   monthYearLabel: string;
   days: WeekDay[];
-  prevWeekDate: string;
-  nextWeekDate: string;
   canGoPrevWeek: boolean;
+  onSelectDate: (dateKey: string) => void;
+  onPrevWeek: () => void;
+  onNextWeek: () => void;
 }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <h2 className="text-[20px] font-semibold text-[#111111]">2. Seleccioná la fecha</h2>
-        <WeekCalendarTrigger courtId={courtId} date={date} label={monthYearLabel} />
+        <span className="text-[13px] font-semibold tracking-wide text-[#636366] uppercase">Fecha</span>
+        <WeekCalendarTrigger date={date} label={monthYearLabel} onSelect={onSelectDate} />
       </div>
 
       <div className="flex items-center gap-1">
         {canGoPrevWeek ? (
-          <Link
-            href={`?court=${courtId}&date=${prevWeekDate}`}
+          <button
+            type="button"
+            onClick={onPrevWeek}
             className="flex size-9 shrink-0 touch-manipulation items-center justify-center rounded-full text-[#636366] active:bg-[#E5E5EA]"
           >
             <ChevronLeft className="size-4" />
-          </Link>
+          </button>
         ) : (
           <span className="flex size-9 shrink-0 items-center justify-center text-[#E5E5EA]">
             <ChevronLeft className="size-4" />
@@ -62,9 +64,10 @@ export function WeekStrip({
                 </span>
               </span>
             ) : (
-              <Link
+              <button
                 key={d.date}
-                href={`?court=${courtId}&date=${d.date}`}
+                type="button"
+                onClick={() => onSelectDate(d.date)}
                 className={cn(
                   "flex h-14 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl transition-all duration-100 active:scale-95",
                   d.isSelected
@@ -76,17 +79,18 @@ export function WeekStrip({
                 <span className="text-[15px] font-semibold [font-variant-numeric:tabular-nums]">
                   {d.dayNumber}
                 </span>
-              </Link>
+              </button>
             ),
           )}
         </div>
 
-        <Link
-          href={`?court=${courtId}&date=${nextWeekDate}`}
+        <button
+          type="button"
+          onClick={onNextWeek}
           className="flex size-9 shrink-0 touch-manipulation items-center justify-center rounded-full text-[#636366] active:bg-[#E5E5EA]"
         >
           <ChevronRight className="size-4" />
-        </Link>
+        </button>
       </div>
     </div>
   );
