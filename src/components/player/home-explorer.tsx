@@ -16,7 +16,7 @@ export function HomeExplorer({ establishments }: { establishments: Establishment
     <div className="flex flex-col gap-4">
       <SportFilter selected={selected} onSelect={setSelected} />
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {filtered.map((e) => (
           <EstablishmentCard key={e.id} establishment={e} />
         ))}

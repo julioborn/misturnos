@@ -4,11 +4,6 @@ import type { EstablishmentListItem } from "@/components/player/establishment-ca
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const { data: profile } = user
-    ? await supabase.from("profiles").select("full_name").eq("id", user.id).single()
-    : { data: null };
 
   const { data: establishments } = await supabase
     .from("establishments")
@@ -40,10 +35,6 @@ export default async function HomePage() {
       className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4 sm:p-6"
       style={{ fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
     >
-      <h1 className="text-[18px] font-semibold text-[#111111]">
-        ¡Hola{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}!
-      </h1>
-
       <HomeExplorer establishments={items} />
     </div>
   );
