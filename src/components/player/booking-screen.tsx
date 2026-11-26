@@ -109,6 +109,7 @@ export function BookingScreen({
       <div className="flex justify-center gap-2 overflow-x-auto">
         {visibleCourts.map((c) => {
           const isSelected = c.id === courtId;
+          const subtitle = c.variant ?? (sports.length <= 1 ? `${sportEmoji(c.sport)} ${sportLabel(c.sport)}` : null);
           return (
             <button
               key={c.id}
@@ -121,13 +122,10 @@ export function BookingScreen({
                   : "bg-[#F2F2F7] text-[#111111] active:bg-[#E5E5EA]",
               )}
             >
-              <span className="text-[15px] font-semibold">
-                {c.name}
-                {c.variant ? ` (${c.variant})` : ""}
-              </span>
-              {sports.length <= 1 && (
+              <span className="text-[15px] font-semibold">{c.name}</span>
+              {subtitle && (
                 <span className={cn("text-[11px]", isSelected ? "text-white/70" : "text-[#636366]")}>
-                  {sportEmoji(c.sport)} {sportLabel(c.sport)}
+                  {subtitle}
                 </span>
               )}
             </button>
