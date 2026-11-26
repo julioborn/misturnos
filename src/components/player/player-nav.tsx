@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, CalendarCheck, Bell } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Home, CalendarCheck, UserCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/", label: "Inicio", icon: Home },
   { href: "/mis-turnos", label: "Mis turnos", icon: CalendarCheck },
-  { href: "/notificaciones", label: "Avisos", icon: Bell },
+  { href: "/cuenta", label: "Mi cuenta", icon: UserCircle },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -20,7 +19,7 @@ function isActive(pathname: string, href: string) {
 // si un ancestro tiene backdrop-filter/transform (como el blur del header),
 // se convierte en el contenedor de los elementos `fixed`, y esta barra
 // termina pegada ahí en vez de al fondo real de la pantalla.
-export function PlayerBottomNav({ unreadCount }: { unreadCount: number }) {
+export function PlayerBottomNav() {
   const pathname = usePathname();
 
   return (
@@ -37,14 +36,7 @@ export function PlayerBottomNav({ unreadCount }: { unreadCount: number }) {
               active ? "text-primary" : "text-muted-foreground",
             )}
           >
-            <span className="relative">
-              <Icon className="size-5" />
-              {item.href === "/notificaciones" && unreadCount > 0 && (
-                <Badge className="absolute -right-2 -top-1.5 h-4 min-w-4 justify-center rounded-full px-1 text-[10px]">
-                  {unreadCount}
-                </Badge>
-              )}
-            </span>
+            <Icon className="size-5" />
             {item.label}
           </Link>
         );
@@ -54,7 +46,7 @@ export function PlayerBottomNav({ unreadCount }: { unreadCount: number }) {
 }
 
 // Nav horizontal para desktop, va adentro del header.
-export function PlayerTopNav({ unreadCount }: { unreadCount: number }) {
+export function PlayerTopNav() {
   const pathname = usePathname();
 
   return (
@@ -73,11 +65,6 @@ export function PlayerTopNav({ unreadCount }: { unreadCount: number }) {
           >
             <Icon className="size-4" />
             {item.label}
-            {item.href === "/notificaciones" && unreadCount > 0 && (
-              <Badge className="h-4 min-w-4 justify-center rounded-full px-1 text-[10px]">
-                {unreadCount}
-              </Badge>
-            )}
           </Link>
         );
       })}

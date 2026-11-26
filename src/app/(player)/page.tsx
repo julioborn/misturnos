@@ -1,7 +1,6 @@
-import Link from "next/link";
-import { MapPin, ChevronRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { HomeExplorer } from "@/components/player/home-explorer";
+import type { EstablishmentListItem } from "@/components/player/establishment-card";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -13,48 +12,39 @@ export default async function HomePage() {
 
   const { data: establishments } = await supabase
     .from("establishments")
-    .select("id,name,slug,description,address")
+    .select("id,name,slug,address,photos,logo_url,courts(sport,active)")
     .eq("active", true)
     .order("name");
 
+  const items: EstablishmentListItem[] = (establishments ?? []).map((e) => {
+    const sports = Array.from(
+      new Set(
+        (e.courts ?? [])
+          .filter((c) => c.active)
+          .map((c) => c.sport),
+      ),
+    );
+
+    return {
+      id: e.id,
+      name: e.name,
+      slug: e.slug,
+      address: e.address,
+      image: e.photos?.[0] ?? e.logo_url ?? null,
+      sports,
+    };
+  });
+
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-4 p-4 sm:p-6">
-      <div>
-        <h1 className="text-xl font-bold">
-          ¡Hola{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}!
-        </h1>
-        <p className="text-sm text-muted-foreground">Elegí dónde querés jugar</p>
-      </div>
+    <div
+      className="mx-auto flex min-h-full w-full max-w-2xl flex-col gap-4 bg-[#F2F2F7] p-4 sm:p-6"
+      style={{ fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif" }}
+    >
+      <h1 className="text-[18px] font-semibold text-[#111111]">
+        ¡Hola{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}!
+      </h1>
 
-      <div className="flex flex-col gap-3">
-        {(establishments ?? []).map((e) => (
-          <Link key={e.id} href={`/establecimientos/${e.slug}`}>
-            <Card className="transition-colors hover:bg-accent/40">
-              <CardHeader className="flex-row items-center justify-between space-y-0">
-                <div>
-                  <CardTitle>{e.name}</CardTitle>
-                  {e.address && (
-                    <CardDescription className="mt-1 flex items-center gap-1">
-                      <MapPin className="size-3.5" />
-                      {e.address}
-                    </CardDescription>
-                  )}
-                </div>
-                <ChevronRight className="size-5 shrink-0 text-muted-foreground" />
-              </CardHeader>
-              {e.description && (
-                <CardContent className="pt-0 text-sm text-muted-foreground">{e.description}</CardContent>
-              )}
-            </Card>
-          </Link>
-        ))}
-
-        {(establishments ?? []).length === 0 && (
-          <p className="py-10 text-center text-sm text-muted-foreground">
-            Todavía no hay establecimientos disponibles.
-          </p>
-        )}
-      </div>
+      <HomeExplorer establishments={items} />
     </div>
   );
 }

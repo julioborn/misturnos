@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShieldCheck, LayoutDashboard, UserCircle } from "lucide-react";
+import { ShieldCheck, LayoutDashboard, Bell } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/actions";
 import { PlayerTopNav, PlayerBottomNav } from "@/components/player/player-nav";
 import { PushRegistration } from "@/components/player/push-registration";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default async function PlayerLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -33,6 +34,8 @@ export default async function PlayerLayout({ children }: { children: React.React
         .limit(1)
         .maybeSingle();
 
+  const unreadCount = count ?? 0;
+
   return (
     <div className="flex min-h-full flex-1 flex-col pb-16 [html[data-platform='ios']_&]:pb-[calc(4rem+env(safe-area-inset-bottom))] sm:pb-0">
       <PushRegistration />
@@ -40,7 +43,7 @@ export default async function PlayerLayout({ children }: { children: React.React
         <Link href="/" className="text-base font-bold tracking-tight">
           Mis Turnos
         </Link>
-        <PlayerTopNav unreadCount={count ?? 0} />
+        <PlayerTopNav />
         <div className="flex items-center gap-1">
           {profile?.is_super_admin && (
             <Button variant="ghost" size="sm" render={<Link href="/admin" />}>
@@ -54,9 +57,15 @@ export default async function PlayerLayout({ children }: { children: React.React
               <span className="hidden sm:inline">Panel</span>
             </Button>
           )}
-          <Button variant="ghost" size="sm" render={<Link href="/cuenta" />}>
-            <UserCircle className="size-4" />
-            <span className="hidden sm:inline">Cuenta</span>
+          <Button variant="ghost" size="icon" render={<Link href="/notificaciones" />}>
+            <span className="relative">
+              <Bell className="size-4" />
+              {unreadCount > 0 && (
+                <Badge className="absolute -right-2 -top-2 h-4 min-w-4 justify-center rounded-full px-1 text-[10px]">
+                  {unreadCount}
+                </Badge>
+              )}
+            </span>
           </Button>
           <form action={signOut}>
             <Button variant="ghost" size="sm">
@@ -68,7 +77,7 @@ export default async function PlayerLayout({ children }: { children: React.React
 
       <main className="flex-1">{children}</main>
 
-      <PlayerBottomNav unreadCount={count ?? 0} />
+      <PlayerBottomNav />
     </div>
   );
 }
