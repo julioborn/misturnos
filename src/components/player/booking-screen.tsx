@@ -92,14 +92,14 @@ export function BookingScreen({
                 type="button"
                 onClick={() => selectSport(s)}
                 className={cn(
-                  "flex h-28 flex-1 touch-manipulation flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-100 ease-out active:scale-95",
+                  "flex h-20 flex-1 touch-manipulation flex-col items-center justify-center gap-1 rounded-2xl transition-all duration-100 ease-out active:scale-95",
                   isSelected
                     ? "bg-[#111111] text-white"
-                    : "bg-[#F2F2F7] text-[#111111] active:bg-[#E5E5EA]",
+                    : "bg-white text-[#111111] shadow-[0_1px_3px_rgba(0,0,0,0.06)] active:bg-[#E5E5EA]",
                 )}
               >
-                <span className="text-[40px] leading-none">{sportEmoji(s)}</span>
-                <span className="text-[18px] font-semibold leading-none">{sportLabel(s)}</span>
+                <span className="text-[28px] leading-none">{sportEmoji(s)}</span>
+                <span className="text-[14px] font-semibold leading-none">{sportLabel(s)}</span>
               </button>
             );
           })}
@@ -116,15 +116,15 @@ export function BookingScreen({
               type="button"
               onClick={() => reload(c.id, date)}
               className={cn(
-                "flex h-20 min-w-[120px] flex-1 touch-manipulation flex-col items-center justify-center gap-1 rounded-2xl px-4 transition-all duration-100 ease-out active:scale-95",
+                "flex h-16 min-w-[110px] flex-1 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-2xl px-4 transition-all duration-100 ease-out active:scale-95",
                 isSelected
                   ? "bg-[#111111] text-white"
-                  : "bg-[#F2F2F7] text-[#111111] active:bg-[#E5E5EA]",
+                  : "bg-white text-[#111111] shadow-[0_1px_3px_rgba(0,0,0,0.06)] active:bg-[#E5E5EA]",
               )}
             >
-              <span className="text-[19px] font-semibold">{c.name}</span>
+              <span className="text-[15px] font-semibold">{c.name}</span>
               {subtitle && (
-                <span className={cn("text-[13px]", isSelected ? "text-white/70" : "text-[#636366]")}>
+                <span className={cn("text-[11px]", isSelected ? "text-white/70" : "text-[#636366]")}>
                   {subtitle}
                 </span>
               )}

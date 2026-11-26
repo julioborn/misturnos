@@ -71,11 +71,11 @@ export function BookingSlots({
       {isLoading ? (
         <div className="grid grid-cols-2 gap-2">
           {Array.from({ length: 8 }, (_, i) => (
-            <Skeleton key={i} className="h-[84px] rounded-2xl bg-[#E5E5EA]" />
+            <Skeleton key={i} className="h-[64px] rounded-xl bg-[#E5E5EA]" />
           ))}
         </div>
       ) : (
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {slots.map((slot) => {
           const isSelected = selected?.startsAt === slot.startsAt;
           return (
@@ -85,7 +85,7 @@ export function BookingSlots({
               disabled={!slot.isFree}
               onClick={() => handleSelect(slot)}
               className={cn(
-                "flex min-h-[84px] touch-manipulation items-center justify-center gap-2 rounded-2xl border px-2 py-3 text-center transition-all duration-100 ease-out",
+                "flex min-h-[64px] touch-manipulation items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center transition-all duration-100 ease-out",
                 isSelected
                   ? "border-[#111111] bg-[#111111] text-white active:scale-[0.97]"
                   : slot.isFree
@@ -93,10 +93,10 @@ export function BookingSlots({
                     : "border-transparent bg-[#F2F2F7] text-[#9a9a9e]",
               )}
             >
-              <span className="text-[26px] font-bold [font-variant-numeric:tabular-nums]">
+              <span className="text-[18px] font-bold [font-variant-numeric:tabular-nums]">
                 {slot.startTime}
               </span>
-              {isSelected && <Check className="size-5 shrink-0" />}
+              {isSelected && <Check className="size-4 shrink-0" />}
             </button>
           );
         })}
