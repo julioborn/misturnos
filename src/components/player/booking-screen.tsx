@@ -83,7 +83,7 @@ export function BookingScreen({
   return (
     <div className="flex flex-col gap-5">
       {sports.length > 1 && (
-        <div className="flex justify-center gap-2">
+        <div className="flex gap-2">
           {sports.map((s) => {
             const isSelected = s === selectedSport;
             return (
@@ -92,21 +92,21 @@ export function BookingScreen({
                 type="button"
                 onClick={() => selectSport(s)}
                 className={cn(
-                  "flex h-14 w-20 shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl transition-all duration-100 ease-out active:scale-95",
+                  "flex h-28 flex-1 touch-manipulation flex-col items-center justify-center gap-1.5 rounded-2xl transition-all duration-100 ease-out active:scale-95",
                   isSelected
                     ? "bg-[#111111] text-white"
                     : "bg-[#F2F2F7] text-[#111111] active:bg-[#E5E5EA]",
                 )}
               >
-                <span className="text-[24px] leading-none">{sportEmoji(s)}</span>
-                <span className="text-[11px] font-medium leading-none">{sportLabel(s)}</span>
+                <span className="text-[40px] leading-none">{sportEmoji(s)}</span>
+                <span className="text-[18px] font-semibold leading-none">{sportLabel(s)}</span>
               </button>
             );
           })}
         </div>
       )}
 
-      <div className="flex justify-center gap-2 overflow-x-auto">
+      <div className="flex gap-2 overflow-x-auto">
         {visibleCourts.map((c) => {
           const isSelected = c.id === courtId;
           const subtitle = c.variant ?? (sports.length <= 1 ? `${sportEmoji(c.sport)} ${sportLabel(c.sport)}` : null);
@@ -116,15 +116,15 @@ export function BookingScreen({
               type="button"
               onClick={() => reload(c.id, date)}
               className={cn(
-                "flex h-14 shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 rounded-xl px-4 transition-all duration-100 ease-out active:scale-95",
+                "flex h-20 min-w-[120px] flex-1 touch-manipulation flex-col items-center justify-center gap-1 rounded-2xl px-4 transition-all duration-100 ease-out active:scale-95",
                 isSelected
                   ? "bg-[#111111] text-white"
                   : "bg-[#F2F2F7] text-[#111111] active:bg-[#E5E5EA]",
               )}
             >
-              <span className="text-[15px] font-semibold">{c.name}</span>
+              <span className="text-[19px] font-semibold">{c.name}</span>
               {subtitle && (
-                <span className={cn("text-[11px]", isSelected ? "text-white/70" : "text-[#636366]")}>
+                <span className={cn("text-[13px]", isSelected ? "text-white/70" : "text-[#636366]")}>
                   {subtitle}
                 </span>
               )}
