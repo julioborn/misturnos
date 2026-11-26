@@ -165,6 +165,18 @@ create table public.court_prices (
 );
 create index on public.court_prices (court_id);
 
+-- Canchas que comparten el mismo espacio físico (ej: dos canchas de fútbol 5
+-- que, unidas, forman una de fútbol 7). Reservar una bloquea la otra para la
+-- misma franja. Se carga simétrica (ambas direcciones) para simplificar los
+-- queries de disponibilidad/conflicto.
+create table public.court_conflicts (
+  court_id uuid not null references public.courts(id) on delete cascade,
+  conflicts_with uuid not null references public.courts(id) on delete cascade,
+  primary key (court_id, conflicts_with),
+  check (court_id <> conflicts_with)
+);
+create index on public.court_conflicts (conflicts_with);
+
 -- ---------------------------------------------------------------------
 -- Reservas y bloqueos (un bloqueo es una reserva con status 'blocked')
 -- ---------------------------------------------------------------------
@@ -205,6 +217,52 @@ end $$;
 
 create trigger bookings_set_est before insert or update of court_id on public.bookings
   for each row execute function public.bookings_set_establishment();
+
+-- bookings_no_overlap solo cubre superposición dentro de la MISMA cancha.
+-- Esto cubre el caso de canchas que comparten espacio físico (court_conflicts):
+-- reservar una debe bloquear la/s otra/s para la misma franja, sin importar
+-- si la reserva se crea vía create_booking (jugador) o un insert manual
+-- directo del panel (dueño/staff) — por eso vive acá como trigger y no
+-- adentro de una sola función.
+create or replace function public.bookings_check_conflicts()
+returns trigger language plpgsql as $$
+declare
+  v_lock_key bigint;
+begin
+  if new.status = 'cancelled' then
+    return new;
+  end if;
+
+  -- Serializa contra cualquier otra transacción que toque el mismo grupo de
+  -- canchas vinculadas + franja horaria, para que el chequeo de abajo no
+  -- tenga condición de carrera.
+  v_lock_key := hashtextextended(
+    (select string_agg(id::text, ',' order by id)
+       from (select new.court_id as id
+             union
+             select conflicts_with from public.court_conflicts where court_id = new.court_id) x)
+    || '|' || new.starts_at::text,
+    0
+  );
+  perform pg_advisory_xact_lock(v_lock_key);
+
+  if exists (
+    select 1 from public.bookings b
+     where b.id <> coalesce(new.id, '00000000-0000-0000-0000-000000000000'::uuid)
+       and b.status <> 'cancelled'
+       and b.court_id in (select conflicts_with from public.court_conflicts where court_id = new.court_id)
+       and tstzrange(b.starts_at, b.ends_at) && tstzrange(new.starts_at, new.ends_at)
+  ) then
+    raise exception 'Ese turno ya fue reservado';
+  end if;
+
+  return new;
+end $$;
+
+create trigger bookings_check_conflicts
+  before insert or update of court_id, starts_at, ends_at, status
+  on public.bookings
+  for each row execute function public.bookings_check_conflicts();
 
 -- Jugadores bloqueados por un establecimiento (p. ej. por ausentes reiterados).
 create table public.establishment_player_blocks (
@@ -314,8 +372,11 @@ language sql stable security definer set search_path = public as $$
          ( (s.s_local at time zone s.tz) > now()
            and not exists (
              select 1 from public.bookings b
-              where b.court_id = s.court_id
-                and b.status <> 'cancelled'
+              where b.status <> 'cancelled'
+                and (
+                  b.court_id = s.court_id
+                  or b.court_id in (select conflicts_with from public.court_conflicts where court_id = s.court_id)
+                )
                 and tstzrange(b.starts_at, b.ends_at)
                     && tstzrange(s.s_local at time zone s.tz, s.e_local at time zone s.tz)
            )
@@ -507,6 +568,7 @@ alter table public.establishment_members       enable row level security;
 alter table public.courts                      enable row level security;
 alter table public.court_hours                 enable row level security;
 alter table public.court_prices                enable row level security;
+alter table public.court_conflicts             enable row level security;
 alter table public.bookings                    enable row level security;
 alter table public.establishment_player_blocks enable row level security;
 alter table public.notifications               enable row level security;
@@ -564,6 +626,15 @@ create policy hours_write on public.court_hours for all
 create policy prices_select on public.court_prices for select
   using (exists (select 1 from public.courts c where c.id = court_id));
 create policy prices_write on public.court_prices for all
+  using (exists (select 1 from public.courts c
+                  where c.id = court_id and public.is_member(c.establishment_id, true)))
+  with check (exists (select 1 from public.courts c
+                       where c.id = court_id and public.is_member(c.establishment_id, true)));
+
+-- court_conflicts
+create policy conflicts_select on public.court_conflicts for select
+  using (exists (select 1 from public.courts c where c.id = court_id));
+create policy conflicts_write on public.court_conflicts for all
   using (exists (select 1 from public.courts c
                   where c.id = court_id and public.is_member(c.establishment_id, true)))
   with check (exists (select 1 from public.courts c
