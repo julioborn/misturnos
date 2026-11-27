@@ -20,7 +20,7 @@ export default async function LoginPage({
     <main className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-4 py-10">
       <DotPattern className="[mask-image:radial-gradient(ellipse_60%_60%_at_center,black,transparent)]" />
 
-      <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-6">
+      <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-6">
         <Logo size={56} showText={false} />
 
         <Card className="relative w-full overflow-hidden">
@@ -41,10 +41,10 @@ export default async function LoginPage({
               </Alert>
             )}
 
-            <form action={signIn} className="flex flex-col gap-4">
+            <form action={signIn} className="flex flex-col gap-5">
               <input type="hidden" name="next" value={next ?? "/"} />
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="dni">DNI</Label>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="dni" className="text-base">DNI</Label>
                 <Input
                   id="dni"
                   type="text"
@@ -53,19 +53,21 @@ export default async function LoginPage({
                   placeholder="Sin puntos"
                   required
                   autoComplete="username"
+                  className="h-12 text-base md:text-base"
                 />
               </div>
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="password">Contraseña</Label>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="password" className="text-base">Contraseña</Label>
                 <Input
                   id="password"
                   type="password"
                   name="password"
                   required
                   autoComplete="current-password"
+                  className="h-12 text-base md:text-base"
                 />
               </div>
-              <Button type="submit" className="mt-2 w-full">
+              <Button type="submit" className="mt-2 h-12 w-full text-base">
                 Entrar
               </Button>
             </form>
